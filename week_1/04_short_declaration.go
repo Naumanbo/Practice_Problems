@@ -1,0 +1,34 @@
+package main
+
+import "fmt"
+
+// Problem 4: Short Declaration (:=) vs var
+//
+// Tests: Short declaration operator, var vs :=, scope rules (package vs function level)
+//
+// NEW CONCEPT: := is shorthand for declare + initialize. Only works inside functions.
+//
+// var x int = 10    // explicit type
+// var x = 10        // type inferred
+// x := 10           // short declaration (type inferred, inside function only)
+//
+// Tasks:
+// 1. Use var to declare a package-level variable "version" = "1.0.0"
+// 2. Inside main, use := to create "count" = 42
+// 3. Try using := at package level - observe the compiler error, then fix it
+// 4. Demonstrate re-assignment: you can't use := twice for the same variable
+//
+// Run: go run 04_short_declaration.go
+
+// Package level - must use var
+// version := "1.0.0"  // This won't work - fix it
+
+func main() {
+	// Your code here:
+
+	// Experiment: What happens if you do this?
+	// x := 5
+	// x := 10  // Try this, observe error, then fix
+
+	fmt.Println("Done")
+}
