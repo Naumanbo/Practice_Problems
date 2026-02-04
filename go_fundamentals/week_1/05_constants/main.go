@@ -25,8 +25,29 @@ import "fmt"
 // Run: go run 05_constants.go
 
 // Your constants here:
+const AppName string = "GoLearner"
+const AppNameUntyped = "GoLearner2"
+const (
+	MaxRetries int     = 3
+	Timeout    float64 = 30.0
+)
+
+const (
+	OK         = 200
+	Created    = 201
+	BadRequest = 400
+)
 
 func main() {
 	// Print your constants
+	// NOTE: Cannot reassign or change constants here, they stay the same as when they are initialized, immutable type
+	fmt.Println(AppName)
+	fmt.Println(AppNameUntyped)
+	fmt.Println(MaxRetries)
+	fmt.Println(Timeout)
+	fmt.Println(OK)
+	fmt.Println(Created)
+	fmt.Println(BadRequest)
+
 	fmt.Println("Done")
 }

@@ -25,7 +25,7 @@ func main() {
 
 	// Test cases
 	tests := []struct {
-		a, b     int
+		a, b         int
 		wantA, wantB int
 	}{
 		{1, 2, 2, 1},

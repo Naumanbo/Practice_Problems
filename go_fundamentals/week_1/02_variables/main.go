@@ -16,10 +16,13 @@ import "fmt"
 
 func main() {
 	// Your code here:
-
+	var x, y int = 50, 43
+	var name string = "Nauman"
+	age := 25
+	var isActive bool // zero value is false
 	// Uncomment and fix:
-	// fmt.Println("x:", x, "y:", y)
-	// fmt.Println("name:", name)
-	// fmt.Println("age:", age)
-	// fmt.Println("isActive:", isActive)
+	fmt.Println("x:", x, "y:", y)
+	fmt.Println("name:", name)
+	fmt.Println("age:", age)
+	fmt.Println("isActive:", isActive)
 }

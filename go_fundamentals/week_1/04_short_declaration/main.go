@@ -22,13 +22,17 @@ import "fmt"
 
 // Package level - must use var
 // version := "1.0.0"  // This won't work - fix it
+var version string = "1.0.0"
 
 func main() {
 	// Your code here:
-
+	count := 42
 	// Experiment: What happens if you do this?
 	// x := 5
 	// x := 10  // Try this, observe error, then fix
-
+	fmt.Println(count)
+	count = 56 // cannot use ":=" again if variable is already initialized
+	fmt.Println(count)
+	fmt.Println(version)
 	fmt.Println("Done")
 }

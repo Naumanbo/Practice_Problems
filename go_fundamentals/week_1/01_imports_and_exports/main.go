@@ -12,7 +12,13 @@ package main
 // Run: go run 01_imports_and_exports.go
 
 // Your code here:
+import (
+	"fmt"
+	"math"
+)
 
 func main() {
 	// Print Pi and Sqrt(144)
+	fmt.Println(math.Pi)
+	fmt.Println(math.Sqrt(144))
 }
