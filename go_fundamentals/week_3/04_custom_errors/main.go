@@ -41,14 +41,16 @@ import (
 // var ErrEmpty = ...
 // var ErrNegative = ...
 
-// TODO: Define ValidationError
+// TODO: Implement Error() for ValidationError
 type ValidationError struct {
+	Field   string
+	Message string
 }
 
-// TODO: Implement Error() for ValidationError
-
-// TODO: Define NotFoundError
+// TODO: Implement Error() for NotFoundError
 type NotFoundError struct {
+	Resource string
+	ID       string
 }
 
 // TODO: Implement Error() for NotFoundError

@@ -2,111 +2,203 @@ package main
 
 import "fmt"
 
-// Tests: Slices, make, append, copy, range
+// Tests: Slice internals - capacity, aliasing, append reallocation
 //
-// Implement the following slice operations:
-// - Reverse(s []int) []int - returns a new slice with elements reversed
-// - Filter(s []int, fn func(int) bool) []int - returns elements where fn returns true
-// - Map(s []int, fn func(int) int) []int - applies fn to each element
-// - Sum(s []int) int - returns sum of all elements
-// - Contains(s []int, target int) bool - returns true if target exists in slice
+// Go slices have TRAPS that don't exist in Python lists or C++ vectors.
+// This problem forces you to understand how slices work under the hood.
+//
+// A slice is a struct: { pointer to array, length, capacity }
+// - append() may or may not allocate a new backing array
+// - Multiple slices can share the same backing array (aliasing)
+// - Reslicing doesn't copy data
+//
+// 1. Implement RemoveIndex(s []int, i int) []int
+//    - Remove element at index i, preserving order
+//    - Must NOT modify the original slice's visible elements
+//    - Hint: think about whether append modifies the underlying array
+//
+// 2. Implement InsertAt(s []int, i int, val int) []int
+//    - Insert val at index i, shifting elements right
+//    - Return the new slice
+//
+// 3. Implement Compact(s []int) []int
+//    - Remove consecutive duplicates: [1,1,2,2,2,3,1,1] -> [1,2,3,1]
+//    - Return a new slice
+//
+// 4. Implement Chunk(s []int, size int) [][]int
+//    - Split slice into chunks of given size
+//    - Last chunk may be smaller
+//    - [1,2,3,4,5] with size 2 -> [[1,2], [3,4], [5]]
+//
+// 5. Implement RotateLeft(s []int, k int) []int
+//    - Rotate slice left by k positions
+//    - [1,2,3,4,5] rotated by 2 -> [3,4,5,1,2]
+//    - Must handle k > len(s) and k < 0
+//    - Must NOT modify the original slice
 
-// TODO: Implement Reverse
-func Reverse(s []int) []int {
+// TODO: Implement RemoveIndex
+func RemoveIndex(s []int, i int) []int {
 	return nil
 }
 
-// TODO: Implement Filter
-func Filter(s []int, fn func(int) bool) []int {
+// TODO: Implement InsertAt
+func InsertAt(s []int, i int, val int) []int {
 	return nil
 }
 
-// TODO: Implement Map
-func Map(s []int, fn func(int) int) []int {
+// TODO: Implement Compact
+func Compact(s []int) []int {
 	return nil
 }
 
-// TODO: Implement Sum
-func Sum(s []int) int {
-	return 0
+// TODO: Implement Chunk
+func Chunk(s []int, size int) [][]int {
+	return nil
 }
 
-// TODO: Implement Contains
-func Contains(s []int, target int) bool {
-	return false
+// TODO: Implement RotateLeft
+func RotateLeft(s []int, k int) []int {
+	return nil
 }
 
 func main() {
-	nums := []int{1, 2, 3, 4, 5}
+	// Test RemoveIndex
+	fmt.Println("=== RemoveIndex ===")
+	original := []int{1, 2, 3, 4, 5}
+	removed := RemoveIndex(original, 2)
+	fmt.Println("Removed index 2:", removed)   // [1 2 4 5]
+	fmt.Println("Original:", original[:5])      // Should still be [1 2 3 4 5]
 
-	// Test Reverse
-	fmt.Println("Original:", nums)
-	fmt.Println("Reversed:", Reverse(nums)) // Expected: [5 4 3 2 1]
-	fmt.Println("Original unchanged:", nums) // Should still be [1 2 3 4 5]
+	fmt.Println("Remove first:", RemoveIndex([]int{1, 2, 3}, 0))  // [2 3]
+	fmt.Println("Remove last:", RemoveIndex([]int{1, 2, 3}, 2))   // [1 2]
 
-	// Test Filter (keep even numbers)
-	isEven := func(n int) bool { return n%2 == 0 }
-	fmt.Println("Even numbers:", Filter(nums, isEven)) // Expected: [2 4]
+	// Test InsertAt
+	fmt.Println("\n=== InsertAt ===")
+	fmt.Println(InsertAt([]int{1, 3, 4}, 1, 2))      // [1 2 3 4]
+	fmt.Println(InsertAt([]int{2, 3}, 0, 1))          // [1 2 3]
+	fmt.Println(InsertAt([]int{1, 2}, 2, 3))          // [1 2 3]
 
-	// Test Map (double each number)
-	double := func(n int) int { return n * 2 }
-	fmt.Println("Doubled:", Map(nums, double)) // Expected: [2 4 6 8 10]
+	// Test Compact
+	fmt.Println("\n=== Compact ===")
+	fmt.Println(Compact([]int{1, 1, 2, 2, 2, 3, 1, 1})) // [1 2 3 1]
+	fmt.Println(Compact([]int{1, 1, 1, 1}))               // [1]
+	fmt.Println(Compact([]int{1, 2, 3}))                   // [1 2 3]
+	fmt.Println(Compact([]int{}))                           // []
 
-	// Test Sum
-	fmt.Println("Sum:", Sum(nums)) // Expected: 15
+	// Test Chunk
+	fmt.Println("\n=== Chunk ===")
+	fmt.Println(Chunk([]int{1, 2, 3, 4, 5}, 2))    // [[1 2] [3 4] [5]]
+	fmt.Println(Chunk([]int{1, 2, 3, 4}, 2))       // [[1 2] [3 4]]
+	fmt.Println(Chunk([]int{1, 2, 3}, 5))           // [[1 2 3]]
 
-	// Test Contains
-	fmt.Println("Contains 3:", Contains(nums, 3)) // Expected: true
-	fmt.Println("Contains 9:", Contains(nums, 9)) // Expected: false
+	// Test RotateLeft
+	fmt.Println("\n=== RotateLeft ===")
+	fmt.Println(RotateLeft([]int{1, 2, 3, 4, 5}, 2))  // [3 4 5 1 2]
+	fmt.Println(RotateLeft([]int{1, 2, 3, 4, 5}, 0))  // [1 2 3 4 5]
+	fmt.Println(RotateLeft([]int{1, 2, 3, 4, 5}, 7))  // [3 4 5 1 2] (7 % 5 = 2)
+	fmt.Println(RotateLeft([]int{1, 2, 3, 4, 5}, -1)) // [5 1 2 3 4] (rotate right by 1)
 
 	// Run test cases
 	allPassed := true
 
-	// Reverse tests
-	if fmt.Sprint(Reverse([]int{1, 2, 3})) != "[3 2 1]" {
-		fmt.Println("FAIL: Reverse([1,2,3])")
-		allPassed = false
+	// RemoveIndex - doesn't corrupt original
+	orig := []int{10, 20, 30, 40, 50}
+	origCopy := make([]int, len(orig))
+	copy(origCopy, orig)
+	RemoveIndex(orig, 1)
+	for i := range orig {
+		if orig[i] != origCopy[i] {
+			fmt.Println("FAIL: RemoveIndex modified original slice")
+			allPassed = false
+			break
+		}
 	}
-	if fmt.Sprint(Reverse([]int{})) != "[]" {
-		fmt.Println("FAIL: Reverse([])")
+
+	// RemoveIndex single element
+	if fmt.Sprint(RemoveIndex([]int{42}, 0)) != "[]" {
+		fmt.Println("FAIL: RemoveIndex single element")
 		allPassed = false
 	}
 
-	// Sum tests
-	if Sum([]int{1, 2, 3}) != 6 {
-		fmt.Println("FAIL: Sum([1,2,3])")
-		allPassed = false
-	}
-	if Sum([]int{}) != 0 {
-		fmt.Println("FAIL: Sum([])")
-		allPassed = false
-	}
-	if Sum([]int{-1, 1}) != 0 {
-		fmt.Println("FAIL: Sum([-1, 1])")
+	// InsertAt at beginning
+	if fmt.Sprint(InsertAt([]int{2, 3}, 0, 1)) != "[1 2 3]" {
+		fmt.Println("FAIL: InsertAt beginning")
 		allPassed = false
 	}
 
-	// Contains tests
-	if !Contains([]int{1, 2, 3}, 2) {
-		fmt.Println("FAIL: Contains([1,2,3], 2)")
-		allPassed = false
-	}
-	if Contains([]int{1, 2, 3}, 5) {
-		fmt.Println("FAIL: Contains([1,2,3], 5)")
+	// InsertAt at end
+	if fmt.Sprint(InsertAt([]int{1, 2}, 2, 3)) != "[1 2 3]" {
+		fmt.Println("FAIL: InsertAt end")
 		allPassed = false
 	}
 
-	// Filter tests
-	isPositive := func(n int) bool { return n > 0 }
-	if fmt.Sprint(Filter([]int{-1, 0, 1, 2}, isPositive)) != "[1 2]" {
-		fmt.Println("FAIL: Filter positive")
+	// InsertAt into empty slice
+	if fmt.Sprint(InsertAt([]int{}, 0, 1)) != "[1]" {
+		fmt.Println("FAIL: InsertAt empty")
 		allPassed = false
 	}
 
-	// Map tests
-	square := func(n int) int { return n * n }
-	if fmt.Sprint(Map([]int{1, 2, 3}, square)) != "[1 4 9]" {
-		fmt.Println("FAIL: Map square")
+	// Compact single element
+	if fmt.Sprint(Compact([]int{5})) != "[5]" {
+		fmt.Println("FAIL: Compact single")
+		allPassed = false
+	}
+
+	// Compact all same
+	if fmt.Sprint(Compact([]int{7, 7, 7, 7, 7})) != "[7]" {
+		fmt.Println("FAIL: Compact all same")
+		allPassed = false
+	}
+
+	// Compact no duplicates
+	if fmt.Sprint(Compact([]int{1, 2, 3, 4})) != "[1 2 3 4]" {
+		fmt.Println("FAIL: Compact no dups")
+		allPassed = false
+	}
+
+	// Chunk empty
+	if len(Chunk([]int{}, 3)) != 0 {
+		fmt.Println("FAIL: Chunk empty")
+		allPassed = false
+	}
+
+	// Chunk size 1
+	chunks := Chunk([]int{1, 2, 3}, 1)
+	if len(chunks) != 3 {
+		fmt.Println("FAIL: Chunk size 1")
+		allPassed = false
+	}
+
+	// Chunk exact fit
+	chunks = Chunk([]int{1, 2, 3, 4}, 2)
+	if len(chunks) != 2 || fmt.Sprint(chunks[0]) != "[1 2]" || fmt.Sprint(chunks[1]) != "[3 4]" {
+		fmt.Println("FAIL: Chunk exact fit")
+		allPassed = false
+	}
+
+	// RotateLeft by length (no change)
+	if fmt.Sprint(RotateLeft([]int{1, 2, 3}, 3)) != "[1 2 3]" {
+		fmt.Println("FAIL: RotateLeft by length")
+		allPassed = false
+	}
+
+	// RotateLeft negative (rotate right)
+	if fmt.Sprint(RotateLeft([]int{1, 2, 3, 4}, -1)) != "[4 1 2 3]" {
+		fmt.Println("FAIL: RotateLeft negative")
+		allPassed = false
+	}
+
+	// RotateLeft empty
+	if fmt.Sprint(RotateLeft([]int{}, 5)) != "[]" {
+		fmt.Println("FAIL: RotateLeft empty")
+		allPassed = false
+	}
+
+	// RotateLeft doesn't modify original
+	rotOrig := []int{1, 2, 3}
+	RotateLeft(rotOrig, 1)
+	if fmt.Sprint(rotOrig) != "[1 2 3]" {
+		fmt.Println("FAIL: RotateLeft modified original")
 		allPassed = false
 	}
 

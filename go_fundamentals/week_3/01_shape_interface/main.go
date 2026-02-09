@@ -27,17 +27,20 @@ import (
 type Shape interface {
 }
 
-// TODO: Define Rectangle struct and implement Shape
+// TODO: Implement Shape methods for Rectangle
 type Rectangle struct {
+	width, height float64
 }
 
-// TODO: Define Circle struct and implement Shape
+// TODO: Implement Shape methods for Circle
 type Circle struct {
+	radius float64
 }
 
-// TODO: Define Triangle struct and implement Shape
+// TODO: Implement Shape methods for Triangle
 // Hint: Use Heron's formula for area: sqrt(s*(s-a)*(s-b)*(s-c)) where s = (a+b+c)/2
 type Triangle struct {
+	a, b, c float64
 }
 
 // TODO: Implement TotalArea

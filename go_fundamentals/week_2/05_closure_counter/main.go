@@ -1,133 +1,202 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
-// Tests: Closures, function values, state encapsulation
+// Tests: Closures as state machines, function composition, middleware pattern
 //
-// Implement the following closure factories:
-// - Counter() func() int - returns a function that increments and returns count (starting at 0)
-// - Accumulator(initial int) func(int) int - returns a function that adds to running total
-// - Limiter(max int) func() (int, bool) - returns count and whether limit reached
-// - Memoize(fn func(int) int) func(int) int - returns memoized version of fn
+// These are patterns you'll use constantly in Go backend development.
+//
+// 1. Implement RateLimiter(maxCalls int, window []int) func() bool
+//    - Returns a function that tracks call counts
+//    - The window parameter is ignored (simplified: just count total calls)
+//    - Returns true if under limit, false if limit reached
+//    - Also implement Reset: the returned function should accept a bool parameter
+//      Actually, return TWO functions: func() bool (try) and func() (reset)
+//    Signature: RateLimiter(maxCalls int) (try func() bool, reset func())
+//
+// 2. Implement Pipeline(fns ...func(string) string) func(string) string
+//    - Chains multiple string transformations left to right
+//    - Pipeline(f, g, h)(x) == h(g(f(x)))
+//    - Empty pipeline returns input unchanged
+//
+// 3. Implement Logger(prefix string) func(string)
+//    - Returns a function that prints "[prefix] [count]: message"
+//    - Count increments each call, starting at 1
+//    - Example: log := Logger("APP"); log("started") -> "[APP] [1]: started"
+//
+// 4. Implement Iterator(s []int) (next func() (int, bool), hasNext func() bool)
+//    - Returns two closures sharing state
+//    - next() returns the current element and advances; bool=false if exhausted
+//    - hasNext() returns true if more elements remain
+//    - This is the Iterator pattern from Java/Python, built with closures
+//
+// 5. Implement Debounce(fn func(string), delay int) func(string)
+//    - Returns a debounced version of fn
+//    - Simplified (no actual timing): only calls fn if the argument
+//      is DIFFERENT from the last call's argument
+//    - First call always executes
 
-// TODO: Implement Counter
-// Each call to the returned function increments and returns the count
-// First call returns 1, second returns 2, etc.
-func Counter() func() int {
+// TODO: Implement RateLimiter
+func RateLimiter(maxCalls int) (try func() bool, reset func()) {
+	return nil, nil
+}
+
+// TODO: Implement Pipeline
+func Pipeline(fns ...func(string) string) func(string) string {
 	return nil
 }
 
-// TODO: Implement Accumulator
-// Returns a function that adds its argument to a running total
-func Accumulator(initial int) func(int) int {
+// TODO: Implement Logger
+func Logger(prefix string) func(string) {
 	return nil
 }
 
-// TODO: Implement Limiter
-// Returns count (starting at 1) and true while count <= max
-// After reaching max, returns max and false
-func Limiter(max int) func() (int, bool) {
-	return nil
+// TODO: Implement Iterator
+func Iterator(s []int) (next func() (int, bool), hasNext func() bool) {
+	return nil, nil
 }
 
-// TODO: Implement Memoize
-// Returns a cached version of fn - if called with same input, returns cached result
-func Memoize(fn func(int) int) func(int) int {
+// TODO: Implement Debounce
+func Debounce(fn func(string)) func(string) {
 	return nil
 }
 
 func main() {
-	// Test Counter
-	fmt.Println("=== Counter ===")
-	count := Counter()
-	fmt.Println(count()) // 1
-	fmt.Println(count()) // 2
-	fmt.Println(count()) // 3
+	// Test RateLimiter
+	fmt.Println("=== RateLimiter ===")
+	try, reset := RateLimiter(3)
+	fmt.Println(try()) // true (1/3)
+	fmt.Println(try()) // true (2/3)
+	fmt.Println(try()) // true (3/3)
+	fmt.Println(try()) // false (exceeded)
+	fmt.Println(try()) // false
+	reset()
+	fmt.Println(try()) // true (reset, 1/3 again)
 
-	count2 := Counter() // separate counter
-	fmt.Println(count2()) // 1 (independent)
+	// Test Pipeline
+	fmt.Println("\n=== Pipeline ===")
+	upper := func(s string) string { return strings.ToUpper(s) }
+	addBang := func(s string) string { return s + "!" }
+	trim := func(s string) string { return strings.TrimSpace(s) }
 
-	// Test Accumulator
-	fmt.Println("\n=== Accumulator ===")
-	acc := Accumulator(10)
-	fmt.Println(acc(5))  // 15
-	fmt.Println(acc(3))  // 18
-	fmt.Println(acc(-8)) // 10
+	shout := Pipeline(trim, upper, addBang)
+	fmt.Println(shout("  hello  ")) // HELLO!
 
-	// Test Limiter
-	fmt.Println("\n=== Limiter ===")
-	limit := Limiter(3)
-	for i := 0; i < 5; i++ {
-		n, ok := limit()
-		fmt.Printf("n=%d, ok=%v\n", n, ok)
+	identity := Pipeline() // empty pipeline
+	fmt.Println(identity("unchanged")) // unchanged
+
+	single := Pipeline(upper)
+	fmt.Println(single("test")) // TEST
+
+	// Test Logger
+	fmt.Println("\n=== Logger ===")
+	log := Logger("APP")
+	log("server started")     // [APP] [1]: server started
+	log("listening on :8080") // [APP] [2]: listening on :8080
+	log("request received")   // [APP] [3]: request received
+
+	// Independent loggers
+	dbLog := Logger("DB")
+	dbLog("connected") // [DB] [1]: connected
+
+	// Test Iterator
+	fmt.Println("\n=== Iterator ===")
+	next, hasNext := Iterator([]int{10, 20, 30})
+	for hasNext() {
+		val, _ := next()
+		fmt.Print(val, " ")
 	}
-	// Expected: n=1,ok=true; n=2,ok=true; n=3,ok=true; n=3,ok=false; n=3,ok=false
+	fmt.Println() // 10 20 30
 
-	// Test Memoize
-	fmt.Println("\n=== Memoize ===")
-	callCount := 0
-	expensiveFn := func(n int) int {
-		callCount++
-		fmt.Printf("  Computing for %d...\n", n)
-		return n * n
-	}
+	// Exhausted iterator
+	_, ok := next()
+	fmt.Println("After exhaustion, ok:", ok) // false
 
-	memoized := Memoize(expensiveFn)
-	fmt.Println("Result:", memoized(5)) // Computes
-	fmt.Println("Result:", memoized(5)) // Uses cache
-	fmt.Println("Result:", memoized(3)) // Computes
-	fmt.Println("Result:", memoized(5)) // Uses cache
-	fmt.Printf("Total calls to expensive function: %d\n", callCount) // Should be 2
+	// Empty iterator
+	_, hasNextEmpty := Iterator([]int{})
+	fmt.Println("Empty hasNext:", hasNextEmpty()) // false
+
+	// Test Debounce
+	fmt.Println("\n=== Debounce ===")
+	var calls []string
+	fn := func(s string) { calls = append(calls, s) }
+	debounced := Debounce(fn)
+	debounced("a") // calls fn("a")
+	debounced("a") // skipped (same as last)
+	debounced("a") // skipped
+	debounced("b") // calls fn("b")
+	debounced("b") // skipped
+	debounced("a") // calls fn("a") (different from last)
+	fmt.Println("Debounced calls:", calls) // [a b a]
 
 	// Run test cases
 	allPassed := true
 
-	// Counter tests
-	c := Counter()
-	if c() != 1 || c() != 2 || c() != 3 {
-		fmt.Println("FAIL: Counter sequence")
+	// RateLimiter limit of 1
+	t1, r1 := RateLimiter(1)
+	if !t1() {
+		fmt.Println("FAIL: RateLimiter first call")
+		allPassed = false
+	}
+	if t1() {
+		fmt.Println("FAIL: RateLimiter should block after 1")
+		allPassed = false
+	}
+	r1()
+	if !t1() {
+		fmt.Println("FAIL: RateLimiter after reset")
 		allPassed = false
 	}
 
-	// Independent counters
-	c1, c2 := Counter(), Counter()
-	c1()
-	c1()
-	if c2() != 1 {
-		fmt.Println("FAIL: Counters should be independent")
+	// Pipeline order matters
+	addX := func(s string) string { return s + "X" }
+	addY := func(s string) string { return s + "Y" }
+	if Pipeline(addX, addY)("") != "XY" {
+		fmt.Println("FAIL: Pipeline order, expected XY")
+		allPassed = false
+	}
+	if Pipeline(addY, addX)("") != "YX" {
+		fmt.Println("FAIL: Pipeline reverse order, expected YX")
 		allPassed = false
 	}
 
-	// Accumulator tests
-	a := Accumulator(0)
-	if a(5) != 5 || a(5) != 10 {
-		fmt.Println("FAIL: Accumulator")
+	// Iterator single element
+	n, hn := Iterator([]int{42})
+	if !hn() {
+		fmt.Println("FAIL: Iterator single hasNext")
+		allPassed = false
+	}
+	v, ok2 := n()
+	if v != 42 || !ok2 {
+		fmt.Println("FAIL: Iterator single next")
+		allPassed = false
+	}
+	if hn() {
+		fmt.Println("FAIL: Iterator single exhausted hasNext")
 		allPassed = false
 	}
 
-	// Limiter tests
-	l := Limiter(2)
-	n1, ok1 := l()
-	n2, ok2 := l()
-	n3, ok3 := l()
-	if n1 != 1 || !ok1 || n2 != 2 || !ok2 || n3 != 2 || ok3 {
-		fmt.Println("FAIL: Limiter")
+	// Debounce first call always executes
+	var dc []string
+	db := Debounce(func(s string) { dc = append(dc, s) })
+	db("first")
+	if len(dc) != 1 || dc[0] != "first" {
+		fmt.Println("FAIL: Debounce first call")
 		allPassed = false
 	}
 
-	// Memoize tests
-	calls := 0
-	fn := func(x int) int {
-		calls++
-		return x * 2
-	}
-	memo := Memoize(fn)
-	memo(1)
-	memo(2)
-	memo(1) // should use cache
-	memo(2) // should use cache
-	if calls != 2 {
-		fmt.Printf("FAIL: Memoize - expected 2 calls, got %d\n", calls)
+	// Debounce with alternating values
+	var dc2 []string
+	db2 := Debounce(func(s string) { dc2 = append(dc2, s) })
+	db2("a")
+	db2("b")
+	db2("a")
+	db2("b")
+	if len(dc2) != 4 {
+		fmt.Println("FAIL: Debounce alternating should call all 4")
 		allPassed = false
 	}
 
@@ -135,3 +204,6 @@ func main() {
 		fmt.Println("\nAll tests passed!")
 	}
 }
+
+// Note: strings package imported for your use
+var _ = strings.ToUpper

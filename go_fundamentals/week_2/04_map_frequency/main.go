@@ -1,103 +1,218 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
 
-// Tests: Maps, iteration, two-value assignment, delete
+// Tests: Maps, nested maps, sorting map results, real-world usage patterns
 //
-// Implement the following map operations:
-// - CharFrequency(s string) map[rune]int - count occurrences of each character
-// - MostFrequent(m map[rune]int) (rune, int) - return the most frequent char and its count
-// - Invert(m map[string]int) map[int][]string - invert a map (values become keys, keys become slice of values)
-// - Merge(m1, m2 map[string]int) map[string]int - merge two maps (m2 overwrites m1 on conflict)
+// Build a simple in-memory record store using maps.
+//
+// 1. Define a Record struct: ID int, Tags []string, Score int
+//
+// 2. Implement a Store struct with these methods:
+//    - Add(record Record)                    - add a record
+//    - Get(id int) (Record, bool)            - retrieve by ID
+//    - Delete(id int) bool                   - delete by ID, return false if not found
+//    - AllByTag(tag string) []Record         - return all records with given tag, sorted by Score descending
+//    - TopN(n int) []Record                  - return top n records by Score (sorted descending)
+//    - TagCounts() map[string]int            - count how many records have each tag
+//    - AverageScore() float64                - average score across all records (0.0 if empty)
+//
+// The tricky parts:
+// - Store must maintain BOTH an ID index AND a tag index for O(1) lookups
+// - Delete must clean up BOTH indexes
+// - Think about what data structure the tag index should be
 
-// TODO: Implement CharFrequency
-func CharFrequency(s string) map[rune]int {
+type Record struct {
+	ID    int
+	Tags  []string
+	Score int
+}
+
+type Store struct {
+	// You need at least two maps here
+	// Think: map[int]Record for ID lookup, map[string]??? for tag lookup
+}
+
+// NewStore creates an initialized Store
+func NewStore() *Store {
 	return nil
 }
 
-// TODO: Implement MostFrequent (return 0, 0 for empty map)
-func MostFrequent(m map[rune]int) (rune, int) {
-	return 0, 0
+// TODO: Implement Add
+func (s *Store) Add(record Record) {
 }
 
-// TODO: Implement Invert
-// Example: {"a": 1, "b": 1, "c": 2} -> {1: ["a", "b"], 2: ["c"]}
-func Invert(m map[string]int) map[int][]string {
+// TODO: Implement Get
+func (s *Store) Get(id int) (Record, bool) {
+	return Record{}, false
+}
+
+// TODO: Implement Delete
+func (s *Store) Delete(id int) bool {
+	return false
+}
+
+// TODO: Implement AllByTag (sorted by Score descending)
+func (s *Store) AllByTag(tag string) []Record {
 	return nil
 }
 
-// TODO: Implement Merge
-func Merge(m1, m2 map[string]int) map[string]int {
+// TODO: Implement TopN (sorted by Score descending)
+func (s *Store) TopN(n int) []Record {
 	return nil
+}
+
+// TODO: Implement TagCounts
+func (s *Store) TagCounts() map[string]int {
+	return nil
+}
+
+// TODO: Implement AverageScore
+func (s *Store) AverageScore() float64 {
+	return 0
 }
 
 func main() {
-	// Test CharFrequency
-	freq := CharFrequency("hello")
-	fmt.Println("CharFrequency(\"hello\"):", freq)
-	// Expected: map[e:1 h:1 l:2 o:1]
+	store := NewStore()
 
-	// Test MostFrequent
-	char, count := MostFrequent(freq)
-	fmt.Printf("MostFrequent: '%c' appears %d times\n", char, count)
-	// Expected: 'l' appears 2 times
+	// Add records
+	store.Add(Record{ID: 1, Tags: []string{"go", "backend"}, Score: 95})
+	store.Add(Record{ID: 2, Tags: []string{"go", "cli"}, Score: 80})
+	store.Add(Record{ID: 3, Tags: []string{"python", "ml"}, Score: 90})
+	store.Add(Record{ID: 4, Tags: []string{"go", "backend", "api"}, Score: 85})
+	store.Add(Record{ID: 5, Tags: []string{"python", "backend"}, Score: 70})
 
-	// Test Invert
-	scores := map[string]int{"alice": 90, "bob": 85, "charlie": 90}
-	inverted := Invert(scores)
-	fmt.Println("Inverted:", inverted)
-	// Expected: map[85:[bob] 90:[alice charlie]] (order may vary)
+	// Test Get
+	fmt.Println("=== Get ===")
+	if r, ok := store.Get(1); ok {
+		fmt.Printf("ID 1: %+v\n", r)
+	}
+	if _, ok := store.Get(99); !ok {
+		fmt.Println("ID 99: not found (correct)")
+	}
 
-	// Test Merge
-	m1 := map[string]int{"a": 1, "b": 2}
-	m2 := map[string]int{"b": 3, "c": 4}
-	merged := Merge(m1, m2)
-	fmt.Println("Merged:", merged)
-	// Expected: map[a:1 b:3 c:4]
+	// Test AllByTag
+	fmt.Println("\n=== AllByTag ===")
+	goRecords := store.AllByTag("go")
+	fmt.Println("Tag 'go' (sorted by score desc):")
+	for _, r := range goRecords {
+		fmt.Printf("  ID=%d Score=%d\n", r.ID, r.Score)
+	}
+	// Expected order: ID=1(95), ID=4(85), ID=2(80)
+
+	backendRecords := store.AllByTag("backend")
+	fmt.Println("Tag 'backend':")
+	for _, r := range backendRecords {
+		fmt.Printf("  ID=%d Score=%d\n", r.ID, r.Score)
+	}
+	// Expected order: ID=1(95), ID=4(85), ID=5(70)
+
+	// Test TopN
+	fmt.Println("\n=== TopN ===")
+	top3 := store.TopN(3)
+	fmt.Println("Top 3:")
+	for _, r := range top3 {
+		fmt.Printf("  ID=%d Score=%d\n", r.ID, r.Score)
+	}
+	// Expected: ID=1(95), ID=3(90), ID=4(85)
+
+	// Test TagCounts
+	fmt.Println("\n=== TagCounts ===")
+	counts := store.TagCounts()
+	fmt.Println(counts) // map[api:1 backend:3 cli:1 go:3 ml:1 python:2]
+
+	// Test AverageScore
+	fmt.Println("\n=== AverageScore ===")
+	fmt.Printf("Average: %.1f\n", store.AverageScore()) // 84.0
+
+	// Test Delete
+	fmt.Println("\n=== Delete ===")
+	store.Delete(2)
+	goAfterDelete := store.AllByTag("go")
+	fmt.Println("Tag 'go' after deleting ID 2:")
+	for _, r := range goAfterDelete {
+		fmt.Printf("  ID=%d Score=%d\n", r.ID, r.Score)
+	}
+	// Expected: ID=1(95), ID=4(85) — ID 2 gone
+	fmt.Println("Tag 'cli' after deleting ID 2:", store.AllByTag("cli")) // []
 
 	// Run test cases
 	allPassed := true
 
-	// CharFrequency tests
-	f := CharFrequency("aab")
-	if f['a'] != 2 || f['b'] != 1 {
-		fmt.Println("FAIL: CharFrequency(\"aab\")")
+	// Empty store
+	empty := NewStore()
+	if empty.AverageScore() != 0 {
+		fmt.Println("FAIL: AverageScore on empty store")
+		allPassed = false
+	}
+	if len(empty.TopN(5)) != 0 {
+		fmt.Println("FAIL: TopN on empty store")
+		allPassed = false
+	}
+	if len(empty.AllByTag("anything")) != 0 {
+		fmt.Println("FAIL: AllByTag on empty store")
 		allPassed = false
 	}
 
-	f = CharFrequency("")
-	if len(f) != 0 {
-		fmt.Println("FAIL: CharFrequency(\"\")")
+	// Add and Get
+	s := NewStore()
+	s.Add(Record{ID: 1, Tags: []string{"a"}, Score: 50})
+	if r, ok := s.Get(1); !ok || r.Score != 50 {
+		fmt.Println("FAIL: Add then Get")
 		allPassed = false
 	}
 
-	// MostFrequent tests
-	c, n := MostFrequent(map[rune]int{'x': 5, 'y': 3})
-	if c != 'x' || n != 5 {
-		fmt.Println("FAIL: MostFrequent")
+	// Delete nonexistent
+	if s.Delete(999) {
+		fmt.Println("FAIL: Delete nonexistent should return false")
 		allPassed = false
 	}
 
-	c, n = MostFrequent(map[rune]int{})
-	if c != 0 || n != 0 {
-		fmt.Println("FAIL: MostFrequent empty map")
+	// Delete cleans up tag index
+	s2 := NewStore()
+	s2.Add(Record{ID: 1, Tags: []string{"x", "y"}, Score: 10})
+	s2.Delete(1)
+	if len(s2.AllByTag("x")) != 0 {
+		fmt.Println("FAIL: Delete should clean tag index")
+		allPassed = false
+	}
+	if _, ok := s2.Get(1); ok {
+		fmt.Println("FAIL: Get after Delete should return false")
 		allPassed = false
 	}
 
-	// Merge tests
-	result := Merge(
-		map[string]int{"x": 1},
-		map[string]int{"x": 2, "y": 3},
-	)
-	if result["x"] != 2 || result["y"] != 3 {
-		fmt.Println("FAIL: Merge")
+	// TopN with n > number of records
+	s3 := NewStore()
+	s3.Add(Record{ID: 1, Tags: []string{}, Score: 10})
+	s3.Add(Record{ID: 2, Tags: []string{}, Score: 20})
+	top := s3.TopN(10)
+	if len(top) != 2 || top[0].Score != 20 {
+		fmt.Println("FAIL: TopN n > count")
 		allPassed = false
 	}
 
-	// Test nil maps
-	result = Merge(nil, map[string]int{"a": 1})
-	if result["a"] != 1 {
-		fmt.Println("FAIL: Merge with nil")
+	// AllByTag is sorted descending by score
+	s4 := NewStore()
+	s4.Add(Record{ID: 1, Tags: []string{"t"}, Score: 10})
+	s4.Add(Record{ID: 2, Tags: []string{"t"}, Score: 30})
+	s4.Add(Record{ID: 3, Tags: []string{"t"}, Score: 20})
+	tagged := s4.AllByTag("t")
+	if len(tagged) != 3 || tagged[0].Score != 30 || tagged[1].Score != 20 || tagged[2].Score != 10 {
+		fmt.Println("FAIL: AllByTag sort order")
+		allPassed = false
+	}
+
+	// TagCounts accuracy
+	s5 := NewStore()
+	s5.Add(Record{ID: 1, Tags: []string{"a", "b"}, Score: 1})
+	s5.Add(Record{ID: 2, Tags: []string{"b", "c"}, Score: 2})
+	tc := s5.TagCounts()
+	if tc["a"] != 1 || tc["b"] != 2 || tc["c"] != 1 {
+		fmt.Println("FAIL: TagCounts")
 		allPassed = false
 	}
 
@@ -105,3 +220,7 @@ func main() {
 		fmt.Println("\nAll tests passed!")
 	}
 }
+
+// Note: sort and strings packages imported for your use
+var _ = sort.Slice
+var _ = strings.Join
