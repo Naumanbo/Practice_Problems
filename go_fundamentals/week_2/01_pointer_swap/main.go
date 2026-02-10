@@ -37,38 +37,139 @@ type LinkedList struct {
 
 // TODO: Implement PushFront
 func (ll *LinkedList) PushFront(val int) {
+	// 0 -> 1 -> 2, pushFront(3): 3 -> 0 -> 1 -> 2
+	var pushNode Node = Node{val, ll.Head}
+	ll.Head = &pushNode
+	ll.size += 1
 }
 
 // TODO: Implement PushBack
 func (ll *LinkedList) PushBack(val int) {
+	var pushNode Node = Node{val, nil}
+	if ll.Head == nil {
+		ll.Head = &pushNode
+	} else {
+		// 1. Set the Next pointer for second to last element to pushNode
+		// 2. Push pushNode and give it a nil next pointer
+		var tmp *Node = ll.Head
+		for ; tmp.Next != nil; tmp = tmp.Next {
+			continue
+		}
+		tmp.Next = &pushNode
+
+	}
+
+	ll.size += 1
+
 }
 
 // TODO: Implement PopFront
 func (ll *LinkedList) PopFront() (int, bool) {
-	return 0, false
+	if ll.Head != nil {
+		var newHead *Node = ll.Head.Next
+		var ret int = ll.Head.Value
+
+		ll.Head = newHead
+		ll.size--
+		return ret, true
+
+	} else {
+		return 0, false
+	}
 }
 
 // TODO: Implement Find
 func (ll *LinkedList) Find(val int) *Node {
+
+	for tmp := ll.Head; tmp != nil; tmp = tmp.Next {
+		if tmp.Value == val {
+			return tmp
+		}
+	}
+
 	return nil
+
 }
 
 // TODO: Implement Delete
 func (ll *LinkedList) Delete(val int) bool {
+	/* Test case 1: 0 -> 1 -> 2, delete (1)
+		(1) store 1.Next
+		(2) Find element before 1
+		(3) Replace 0.Next with 1.Next (2)
+	   Test Case 2: 0 -> 1, delete (1)
+	   	(1) get element before last element in list
+		(2) set last element next node to nil
+	   Test Case 3: 0 -> 1 -> 2, delete (0)
+	   	(1) if find(0) == ll.Head,
+		(2) store tmp = ll.Head.Next
+		(3) set ll.Head.Next = nil
+		(4) set ll.Head = tmp
+	   Test Case 4: 0, delete (0)
+	   	(1) This is both first and last element. What will happen?
+		(2) will default to first element case since ll.Head == node and it will perform correctly because tmp will be nil if only one element in list so new head will become nil as expected
+	*/
+	node := ll.Find(val)
+	if node != nil {
+		// 3 different cases:
+		// 1. It is first element in the list
+		if ll.Head == node {
+			tmp := ll.Head.Next
+			ll.Head = tmp
+		} else if node.Next == nil { // 2. It is the last element of the list
+			for tmp := ll.Head; tmp.Next != nil; tmp = tmp.Next {
+				if tmp.Next == node {
+					tmp.Next = nil
+					break
+				}
+			}
+		} else { // 3. It is in the middle somewhere of the list
+			elt := node.Next
+			for tmp := ll.Head; tmp.Next != nil; tmp = tmp.Next {
+				if tmp.Next == node {
+					tmp.Next = elt
+					break
+				}
+			}
+		}
+
+		ll.size--
+		return true
+	}
 	return false
 }
 
 // TODO: Implement Reverse
 func (ll *LinkedList) Reverse() {
+	// Reverse in place, use prev, curr and next pointers
+	var prev *Node = nil
+	current := ll.Head
+	var next *Node = nil
+
+	for current != nil {
+		next = current.Next
+		current.Next = prev
+		prev = current
+		current = next
+	}
+	ll.Head = prev
+
 }
 
 // TODO: Implement Size
 func (ll *LinkedList) Size() int {
-	return 0
+	return ll.size
 }
 
 // TODO: Implement ToSlice
 func (ll *LinkedList) ToSlice() []int {
+	if ll.Head != nil {
+		var s []int
+		for tmp := ll.Head; tmp != nil; tmp = tmp.Next {
+			s = append(s, tmp.Value)
+		}
+		return s
+	}
 	return nil
 }
 
@@ -82,7 +183,7 @@ func main() {
 	fmt.Println(ll.ToSlice()) // [1 2 3]
 
 	ll.PushFront(0)
-	fmt.Println(ll.ToSlice()) // [0 1 2 3]
+	fmt.Println(ll.ToSlice())       // [0 1 2 3]
 	fmt.Println("Size:", ll.Size()) // 4
 
 	fmt.Println("\n=== Find ===")
@@ -93,13 +194,13 @@ func main() {
 	fmt.Println("Find 99:", ll.Find(99)) // <nil>
 
 	fmt.Println("\n=== Delete ===")
-	ll.Delete(0) // delete head
+	ll.Delete(0)                                 // delete head
 	fmt.Println("After delete 0:", ll.ToSlice()) // [1 2 3]
 
-	ll.Delete(2) // delete middle
+	ll.Delete(2)                                 // delete middle
 	fmt.Println("After delete 2:", ll.ToSlice()) // [1 3]
 
-	ll.Delete(3) // delete tail
+	ll.Delete(3)                                 // delete tail
 	fmt.Println("After delete 3:", ll.ToSlice()) // [1]
 
 	fmt.Println("\n=== PopFront ===")
