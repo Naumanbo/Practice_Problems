@@ -4,6 +4,14 @@ import "fmt"
 
 // Tests: Struct embedding, method promotion, value vs pointer receiver semantics
 //
+// KEY TAKEAWAYS:
+// - Go has no inheritance. EMBEDDING promotes fields/methods from inner to outer struct.
+// - Embedding `User` (value) = Admin owns a COPY. Mutating admin's User does NOT affect the original.
+// - Embedding `*User` (pointer) = Admin SHARES the original. Mutations propagate to both.
+// - The receiver type (*User vs User) controls whether a method can mutate its own struct,
+//   but does NOT control whether two variables point to the same data — that's the embedding type.
+// - Overriding: User.Describe() shadows Base.Describe(), but you can still call u.Base.Describe().
+//
 // Go doesn't have inheritance. It has EMBEDDING, which promotes methods
 // from the inner struct to the outer struct. This problem forces you to
 // understand how that works and where it breaks.
@@ -36,40 +44,63 @@ type Base struct {
 }
 
 func (b Base) Describe() string {
-	return ""
+	return fmt.Sprintf(("ID: %d, Created: %s"), b.ID, b.CreatedAt)
 }
 
 type User struct {
-	Base
+	Base  // embedding, done by adding another struct without assigning variable to it
 	Name  string
 	Email string
 }
 
 func (u User) Describe() string {
-	return ""
+	return fmt.Sprintf("User: %s (%s), ID: %d", u.Name, u.Email, u.ID)
 }
 
+// 5. Implement UpdateEmail(user *User, newEmail string)
+//   - Pointer receiver question: if Admin embeds User (not *User),
+//     does calling admin.UpdateEmail() modify the admin's copy?
+//   - Implement and verify with the test cases below
+//
 // UpdateEmail modifies the user's email
 // Think: should this be a value or pointer receiver?
 func (u *User) UpdateEmail(newEmail string) {
+	u.Email = newEmail
 }
 
+// 3. Define an Admin struct that EMBEDS User
+//   - Fields: Permissions []string
+//   - Method: HasPermission(perm string) bool
+//   - Method: Describe() string -> "Admin: <name>, Permissions: [<perms>]"
 type Admin struct {
-	User
+	User        // embeds a COPY of user (value embedding)
 	Permissions []string
 }
 
 func (a Admin) Describe() string {
-	return ""
+
+	return fmt.Sprintf("Admin: %s, Permissions: [%s]", a.Name, a.Permissions)
 }
 
 func (a Admin) HasPermission(perm string) bool {
+
+	for _, v := range a.Permissions {
+		if v == perm {
+			return true
+		}
+	}
+
 	return false
 }
 
+// 4. Implement Promote(user *User, perms []string) Admin
+//    - Creates an Admin from an existing User with given permissions
+//    - The Admin should share the same Base data (ID, CreatedAt)
+//
+
 // Promote creates an Admin from a User
 func Promote(user *User, perms []string) Admin {
-	return Admin{}
+	return Admin{*user, perms}
 }
 
 func main() {
@@ -85,9 +116,9 @@ func main() {
 		Name:  "Alice",
 		Email: "alice@example.com",
 	}
-	fmt.Println(u.Describe())   // User: Alice (alice@example.com), ID: 42
-	fmt.Println(u.ID)           // 42 - accessed directly through embedding
-	fmt.Println(u.CreatedAt)    // 2026-02-01 - promoted field
+	fmt.Println(u.Describe()) // User: Alice (alice@example.com), ID: 42
+	fmt.Println(u.ID)         // 42 - accessed directly through embedding
+	fmt.Println(u.CreatedAt)  // 2026-02-01 - promoted field
 
 	// Test overridden Describe - can still access base version
 	fmt.Println(u.Base.Describe()) // ID: 42, Created: 2026-02-01
@@ -95,7 +126,7 @@ func main() {
 	// Test Admin
 	fmt.Println("\n=== Admin ===")
 	admin := Promote(&u, []string{"read", "write", "delete"})
-	fmt.Println(admin.Describe()) // Admin: Alice, Permissions: [read write delete]
+	fmt.Println(admin.Describe())                               // Admin: Alice, Permissions: [read write delete]
 	fmt.Println("Has 'write':", admin.HasPermission("write"))   // true
 	fmt.Println("Has 'deploy':", admin.HasPermission("deploy")) // false
 
@@ -110,7 +141,8 @@ func main() {
 	allPassed := true
 
 	// Base describe
-	if Base{ID: 5, CreatedAt: "today"}.Describe() != "ID: 5, Created: today" {
+	b2 := Base{ID: 5, CreatedAt: "today"}
+	if b2.Describe() != "ID: 5, Created: today" {
 		fmt.Println("FAIL: Base.Describe")
 		allPassed = false
 	}
