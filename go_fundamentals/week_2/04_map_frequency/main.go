@@ -35,30 +35,60 @@ type Record struct {
 type Store struct {
 	// You need at least two maps here
 	// Think: map[int]Record for ID lookup, map[string]??? for tag lookup
+	records    map[int]Record
+	tags       map[string][]int
+	numRecords int
 }
 
 // NewStore creates an initialized Store
 func NewStore() *Store {
-	return nil
+	return &Store{}
 }
 
 // TODO: Implement Add
 func (s *Store) Add(record Record) {
+	s.records[s.numRecords] = record
+	for _, tag := range record.Tags {
+		s.tags[tag] = append(s.tags[tag], record.ID)
+	}
+	s.numRecords++
 }
 
 // TODO: Implement Get
 func (s *Store) Get(id int) (Record, bool) {
+	record, ok := s.records[id]
+	if ok == true {
+		return record, true
+	}
 	return Record{}, false
+
 }
 
 // TODO: Implement Delete
 func (s *Store) Delete(id int) bool {
+	record, ok := s.records[id]
+	if ok == true {
+		delete(s.records, id)
+		// TODO: handle deleting the id from all tags that have the id {HOW??}
+		recordTags := record.Tags
+		for tag := range recordTags {
+			for i, v := range s.tags[tag] { // why is there an error here?
+				if v == id {
+					RemoveIndex(s.tags[tag], i) // remove index of the id from tags map
+				}
+			}
+		}
+		s.numRecords--
+		return true
+	}
+
 	return false
+
 }
 
 // TODO: Implement AllByTag (sorted by Score descending)
 func (s *Store) AllByTag(tag string) []Record {
-	return nil
+	return
 }
 
 // TODO: Implement TopN (sorted by Score descending)
