@@ -42,12 +42,12 @@ type Store struct {
 
 // NewStore creates an initialized Store
 func NewStore() *Store {
-	return &Store{}
+	return &Store{records: make(map[int]Record), tags: make(map[string][]int), numRecords: 0}
 }
 
 // TODO: Implement Add
 func (s *Store) Add(record Record) {
-	s.records[s.numRecords] = record
+	s.records[record.ID] = record
 	for _, tag := range record.Tags {
 		s.tags[tag] = append(s.tags[tag], record.ID)
 	}
@@ -71,10 +71,13 @@ func (s *Store) Delete(id int) bool {
 		delete(s.records, id)
 		// TODO: handle deleting the id from all tags that have the id {HOW??}
 		recordTags := record.Tags
-		for tag := range recordTags {
-			for i, v := range s.tags[tag] { // why is there an error here?
+		for _, tag := range recordTags { // remove from all tags containing id
+			for i, v := range s.tags[tag] {
 				if v == id {
-					RemoveIndex(s.tags[tag], i) // remove index of the id from tags map
+					newTags := []int{}
+					newTags = append(newTags, s.tags[tag][:i]...)
+					newTags = append(newTags, s.tags[tag][i+1:]...)
+					s.tags[tag] = newTags // remove index of the id from tags map
 				}
 			}
 		}
