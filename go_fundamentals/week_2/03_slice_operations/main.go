@@ -41,7 +41,7 @@ func RemoveIndex(s []int, i int) []int {
 	// avoid using append since this writes into the original array
 	len := len(s[:i]) + len(s[i+1:])
 	combined := make([]int, 0, len)
-	combined = append(combined, s[i:]...)
+	combined = append(combined, s[:i]...)
 	combined = append(combined, s[i+1:]...)
 	return combined
 }
@@ -98,9 +98,16 @@ func Chunk(s []int, size int) [][]int {
 //   - Must handle k > len(s) and k < 0
 //   - Must NOT modify the original slice
 func RotateLeft(s []int, k int) []int {
-	// k % size = rotation value if k > len(s)
+	// k % size = rotation value if k > len(s) 2
+	normalized := 0
+	if len(s) != 0 {
+		normalized = (k%len(s) + len(s)) % len(s) // first k % len(s) to normalize k. + len(s) is to handle the case if k is negative, if it is the normalization returns a negative value resulting in error. adding len(s) fixes this and the final % len(s) normalizes again in case the addition makes value bigger than len(s) - 1
+	}
 
-	return nil
+	newSlice := []int{}
+	newSlice = append(newSlice, s[normalized:]...)
+	newSlice = append(newSlice, s[:normalized]...)
+	return newSlice
 }
 
 func main() {
