@@ -4,6 +4,16 @@ import "fmt"
 
 // Tests: Slice internals - capacity, aliasing, append reallocation
 //
+// KEY TAKEAWAYS:
+// - append() can modify the ORIGINAL backing array if capacity allows (aliasing trap).
+//   To avoid corrupting the original, allocate a fresh slice with make() before appending.
+// - The ... spread operator is required to unpack a slice into append: append(a, b...).
+//   Without it, Go thinks you're appending a []int as a single int element.
+// - Slice syntax s[i:j] uses ABSOLUTE indices, not relative. s[i:size] != s[i:i+size].
+// - Go's % operator returns negative values for negative inputs: -1 % 5 = -1.
+//   Use ((k % n) + n) % n to guarantee a positive modulo result — standard pattern.
+// - The normalized rotation value IS the starting index: s[k:] + s[:k] = rotated slice.
+//
 // Go slices have TRAPS that don't exist in Python lists or C++ vectors.
 // This problem forces you to understand how slices work under the hood.
 //

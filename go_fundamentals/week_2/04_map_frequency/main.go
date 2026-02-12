@@ -8,6 +8,18 @@ import (
 
 // Tests: Maps, nested maps, sorting map results, real-world usage patterns
 //
+// KEY TAKEAWAYS:
+// - Maps MUST be initialized with make() before use. Writing to a nil map panics at runtime.
+// - delete(m, key) modifies the map in place — no return value, no reassignment needed.
+//   Maps are reference types (unlike slices where append requires reassignment).
+// - When using a map as an ID index, key by the actual record ID, not a counter.
+// - sort.Slice(s, less) sorts in place with a comparator. Use > for descending, < for ascending.
+// - Variables declared inside an if block are scoped to that block — return from within it
+//   or declare the variable outside the block first.
+// - Always bounds-check before slicing: s[:n] panics if n > len(s).
+// - Dual-index pattern: maintaining two maps (ID→Record and Tag→[]ID) gives O(1) lookups
+//   but Delete must clean up BOTH indexes to stay consistent.
+//
 // Build a simple in-memory record store using maps.
 //
 // 1. Define a Record struct: ID int, Tags []string, Score int
