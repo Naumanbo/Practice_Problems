@@ -91,22 +91,63 @@ func (s *Store) Delete(id int) bool {
 
 // TODO: Implement AllByTag (sorted by Score descending)
 func (s *Store) AllByTag(tag string) []Record {
-	return
+	tagList, ok := s.tags[tag]
+	if ok && len(tagList) > 0 {
+		recordList := make([]Record, 0)
+		for _, id := range tagList {
+			recordList = append(recordList, s.records[id])
+		}
+
+		sort.Slice(recordList, func(i, j int) bool { //in place sorting a slice using a comparator/less function
+			return recordList[i].Score > recordList[j].Score
+		})
+
+		return recordList
+
+	}
+	return make([]Record, 0)
 }
 
 // TODO: Implement TopN (sorted by Score descending)
 func (s *Store) TopN(n int) []Record {
-	return nil
+	topNSlice := make([]Record, 0)
+
+	for recordID := range s.records {
+		topNSlice = append(topNSlice, s.records[recordID])
+	}
+
+	sort.Slice(topNSlice, func(i, j int) bool {
+		return topNSlice[i].Score > topNSlice[j].Score
+	})
+
+	if n > len(topNSlice) {
+		return topNSlice
+	} else {
+		return topNSlice[:n]
+	}
 }
 
 // TODO: Implement TagCounts
 func (s *Store) TagCounts() map[string]int {
-	return nil
+	tagCounts := make(map[string]int, 0)
+	for tag := range s.tags {
+		tagCounts[tag] = len(s.tags[tag])
+	}
+
+	return tagCounts
 }
 
 // TODO: Implement AverageScore
 func (s *Store) AverageScore() float64 {
-	return 0
+	var avgScore float64 = 0.0
+	aggregateScore := 0
+	for key := range s.records {
+		aggregateScore += s.records[key].Score
+	}
+	if s.numRecords != 0 {
+		avgScore = float64(aggregateScore) / float64(s.numRecords)
+	}
+	return avgScore
 }
 
 func main() {
