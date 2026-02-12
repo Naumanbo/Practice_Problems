@@ -4,6 +4,13 @@ import "fmt"
 
 // Problem 3: Functions
 //
+// KEY TAKEAWAYS:
+// - Named return values (e.g., func f() (min int, max int)) allow naked returns.
+// - DON'T name return values after built-in functions: naming a return "min" or "max"
+//   shadows Go's built-in min()/max(), causing compile errors when you try to call them.
+// - Renamed to minNumber/maxNumber to avoid shadowing.
+// - Consider edge cases like division by zero even when not explicitly asked.
+//
 // Tests: Function syntax, multiple return values, naked returns with named return values
 //
 // Tasks:

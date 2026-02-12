@@ -4,6 +4,12 @@ import "fmt"
 
 // Problem 5: Constants
 //
+// KEY TAKEAWAYS:
+// - const values are immutable — attempting to reassign causes a compile error.
+// - Untyped constants are flexible: const x = 5 can be used as int, float64, etc.
+//   Typed constants (const x int = 5) are locked to that type.
+// - iota auto-increments in const blocks, starting from 0. Useful for enums.
+//
 // Tests: Constant declaration, typed vs untyped constants, const blocks, immutability
 //
 // NEW CONCEPT: const declares immutable values. Can be typed or untyped.

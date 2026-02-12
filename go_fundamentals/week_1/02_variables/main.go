@@ -4,6 +4,11 @@ import "fmt"
 
 // Problem 2: Variables and Type Declaration
 //
+// KEY TAKEAWAYS:
+// - Go places the type AFTER the variable name: var x int (not int x).
+// - Zero values: int=0, string="", bool=false, float64=0.0. Uninitialized vars are never garbage.
+// - Use camelCase in Go, not snake_case (Python habit to break).
+//
 // Tests: Variable declaration syntax, type placement after name, zero values
 //
 // Tasks:

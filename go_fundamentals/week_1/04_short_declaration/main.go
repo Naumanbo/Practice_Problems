@@ -4,6 +4,11 @@ import "fmt"
 
 // Problem 4: Short Declaration (:=) vs var
 //
+// KEY TAKEAWAYS:
+// - := declares AND initializes. Only works inside functions, not at package level.
+// - var is required at package level or when you want to declare without initializing.
+// - := with an existing variable on the left side only works if at least one variable is new.
+//
 // Tests: Short declaration operator, var vs :=, scope rules (package vs function level)
 //
 // NEW CONCEPT: := is shorthand for declare + initialize. Only works inside functions.

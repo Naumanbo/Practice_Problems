@@ -2,6 +2,10 @@ package main
 
 // Problem 1: Imports and Exported Names
 //
+// KEY TAKEAWAYS:
+// - In Go, exported names start with a Capital letter (math.Pi, not math.pi).
+// - Use batch import syntax with parentheses: import ("fmt" \n "math")
+//
 // Tests: Batch import syntax, accessing exported names from packages
 //
 // Tasks:

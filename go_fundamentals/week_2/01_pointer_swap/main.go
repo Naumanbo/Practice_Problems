@@ -4,6 +4,21 @@ import "fmt"
 
 // Tests: Pointers, pointer receivers, linked data structures
 //
+// KEY TAKEAWAYS:
+// - append() returns a NEW slice — you must assign it back: s = append(s, val).
+//   Forgetting this is a silent bug; the original slice stays unchanged.
+// - Linked list Delete: "last node" and "middle node" cases merge into one:
+//   predecessor.Next = node.Next works for both. Don't overengineer with 3 cases.
+// - Always decrement size counters (ll.size--) in Delete — easy to forget.
+// - Reverse uses the three-pointer technique (prev, current, next). Order matters:
+//   1. next = current.Next (save reference before overwriting)
+//   2. current.Next = prev (reverse the pointer)
+//   3. prev = current (advance prev)
+//   4. current = next (advance current)
+//   Swapping steps 3 and 4 loses your reference. Set ll.Head = prev at the end.
+// - Always handle the empty list case (ll.Head == nil) to avoid nil pointer panics.
+// - In-place pointer reversal is O(n) time, O(1) space — don't convert to slice and rebuild.
+//
 // Build a singly linked list using pointers.
 //
 // 1. Define a Node struct: Value int, Next *Node
