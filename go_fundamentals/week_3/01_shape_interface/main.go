@@ -7,6 +7,17 @@ import (
 
 // Tests: Interface definition, implicit implementation, polymorphism
 //
+// KEY TAKEAWAYS:
+// - Interfaces in Go are IMPLICIT — no "implements" keyword. If a type has the right methods,
+//   it satisfies the interface automatically.
+// - for _, v := range slice — always use _ for index when you only need the value.
+//   Single-variable range gives the INDEX (int), not the element. Recurring mistake.
+// - %f is the format verb for float64. Use %.2f to control decimal precision.
+// - When finding the max/min in a slice, initialize with the first element (shapes[0])
+//   instead of a dummy zero value — avoids coupling to a specific type.
+// - A []Shape can hold Rectangle, Circle, Triangle — this is polymorphism via interfaces.
+//   You call shape.Area() without knowing the concrete type.
+//
 // 1. Define a Shape interface with two methods:
 //    - Area() float64
 //    - Perimeter() float64
@@ -34,16 +45,20 @@ type Rectangle struct {
 	width, height float64
 }
 
-func (r Rectangle) Area() float64      { return 0 } // TODO: implement
-func (r Rectangle) Perimeter() float64 { return 0 } // TODO: implement
+func (r Rectangle) Area() float64 {
+	return r.width * r.height
+} // TODO: implement
+func (r Rectangle) Perimeter() float64 {
+	return 2 * (r.width + r.height)
+} // TODO: implement
 
 // TODO: Implement Shape methods for Circle
 type Circle struct {
 	radius float64
 }
 
-func (c Circle) Area() float64      { return 0 } // TODO: implement
-func (c Circle) Perimeter() float64 { return 0 } // TODO: implement
+func (c Circle) Area() float64      { return math.Pi * c.radius * c.radius } // TODO: implement
+func (c Circle) Perimeter() float64 { return math.Pi * 2 * c.radius }        // TODO: implement
 
 // TODO: Implement Shape methods for Triangle
 // Hint: Use Heron's formula for area: sqrt(s*(s-a)*(s-b)*(s-c)) where s = (a+b+c)/2
@@ -51,17 +66,39 @@ type Triangle struct {
 	a, b, c float64
 }
 
-func (t Triangle) Area() float64      { return 0 } // TODO: implement
-func (t Triangle) Perimeter() float64 { return 0 } // TODO: implement
+func (t Triangle) Area() float64 {
+	s := (t.a + t.b + t.c) / 2
+
+	return math.Sqrt((s * (s - t.a) * (s - t.b) * (s - t.c))) // TODO: implement
+}
+func (t Triangle) Perimeter() float64 { return t.a + t.b + t.c } // TODO: implement
 
 // TODO: Implement TotalArea
 func TotalArea(shapes []Shape) float64 {
-	return 0
+	var totalArea float64 = 0.0
+	for _, shape := range shapes {
+		totalArea += shape.Area()
+	}
+	return totalArea
 }
 
 // TODO: Implement LargestShape
 func LargestShape(shapes []Shape) Shape {
-	return nil
+	if len(shapes) == 0 {
+		return nil
+	}
+
+	var largestShape Shape = shapes[0]
+
+	for _, shape := range shapes {
+		if shape.Area() > largestShape.Area() {
+			largestShape = shape
+		}
+	}
+
+	// fmt.Printf("Largest Area: %f\n", largestShape.Area())
+
+	return largestShape
 }
 
 // Helper for comparing floats
