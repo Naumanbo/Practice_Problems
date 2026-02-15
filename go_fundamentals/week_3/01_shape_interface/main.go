@@ -25,6 +25,8 @@ import (
 
 // TODO: Define the Shape interface
 type Shape interface {
+	Area() float64
+	Perimeter() float64
 }
 
 // TODO: Implement Shape methods for Rectangle
@@ -32,16 +34,25 @@ type Rectangle struct {
 	width, height float64
 }
 
+func (r Rectangle) Area() float64      { return 0 } // TODO: implement
+func (r Rectangle) Perimeter() float64 { return 0 } // TODO: implement
+
 // TODO: Implement Shape methods for Circle
 type Circle struct {
 	radius float64
 }
+
+func (c Circle) Area() float64      { return 0 } // TODO: implement
+func (c Circle) Perimeter() float64 { return 0 } // TODO: implement
 
 // TODO: Implement Shape methods for Triangle
 // Hint: Use Heron's formula for area: sqrt(s*(s-a)*(s-b)*(s-c)) where s = (a+b+c)/2
 type Triangle struct {
 	a, b, c float64
 }
+
+func (t Triangle) Area() float64      { return 0 } // TODO: implement
+func (t Triangle) Perimeter() float64 { return 0 } // TODO: implement
 
 // TODO: Implement TotalArea
 func TotalArea(shapes []Shape) float64 {

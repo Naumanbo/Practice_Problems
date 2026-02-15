@@ -38,8 +38,8 @@ import (
 //    - Return NotFoundError for unknown IDs
 
 // TODO: Define sentinel errors
-// var ErrEmpty = ...
-// var ErrNegative = ...
+var ErrEmpty = errors.New("empty input")
+var ErrNegative = errors.New("negative number not allowed")
 
 // TODO: Implement Error() for ValidationError
 type ValidationError struct {
@@ -47,13 +47,15 @@ type ValidationError struct {
 	Message string
 }
 
+func (v ValidationError) Error() string { return "" } // TODO: implement
+
 // TODO: Implement Error() for NotFoundError
 type NotFoundError struct {
 	Resource string
 	ID       string
 }
 
-// TODO: Implement Error() for NotFoundError
+func (n NotFoundError) Error() string { return "" } // TODO: implement
 
 // TODO: Implement ValidateUser
 func ValidateUser(name string, age int) error {

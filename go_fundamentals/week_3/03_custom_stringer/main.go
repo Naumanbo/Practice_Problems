@@ -36,11 +36,13 @@ type Temperature struct {
 }
 
 // TODO: Implement String() for Temperature
+func (t Temperature) String() string { return "" } // TODO: implement
 
 // Duration represents a time duration in seconds
 type Duration int // seconds
 
 // TODO: Implement String() for Duration
+func (d Duration) String() string { return "" } // TODO: implement
 
 // RGB represents a color
 type RGB struct {
@@ -48,6 +50,7 @@ type RGB struct {
 }
 
 // TODO: Implement String() for RGB
+func (c RGB) String() string { return "" } // TODO: implement
 
 // Person represents a person
 type Person struct {
@@ -57,11 +60,13 @@ type Person struct {
 }
 
 // TODO: Implement String() for Person
+func (p Person) String() string { return "" } // TODO: implement
 
 // Matrix represents a 2D grid of integers
 type Matrix [][]int
 
 // TODO: Implement String() for Matrix
+func (m Matrix) String() string { return "" } // TODO: implement
 
 func main() {
 	// Test Temperature
@@ -105,11 +110,13 @@ func main() {
 	allPassed := true
 
 	// Temperature tests
-	if Temperature{100, 'C'}.String() != "100°C" {
+	tc1 := Temperature{100, 'C'}
+	if tc1.String() != "100°C" {
 		fmt.Println("FAIL: Temperature 100C")
 		allPassed = false
 	}
-	if Temperature{32, 'F'}.String() != "32°F" {
+	tc2 := Temperature{32, 'F'}
+	if tc2.String() != "32°F" {
 		fmt.Println("FAIL: Temperature 32F")
 		allPassed = false
 	}
@@ -137,21 +144,25 @@ func main() {
 	}
 
 	// RGB tests
-	if RGB{0, 0, 0}.String() != "#000000" {
+	black := RGB{0, 0, 0}
+	if black.String() != "#000000" {
 		fmt.Println("FAIL: RGB black")
 		allPassed = false
 	}
-	if RGB{255, 255, 255}.String() != "#FFFFFF" {
+	white := RGB{255, 255, 255}
+	if white.String() != "#FFFFFF" {
 		fmt.Println("FAIL: RGB white")
 		allPassed = false
 	}
-	if RGB{171, 205, 239}.String() != "#ABCDEF" {
+	abc := RGB{171, 205, 239}
+	if abc.String() != "#ABCDEF" {
 		fmt.Println("FAIL: RGB ABCDEF")
 		allPassed = false
 	}
 
 	// Person tests
-	if Person{"Bob", 25, "Developer"}.String() != "Bob (25) - Developer" {
+	bob := Person{"Bob", 25, "Developer"}
+	if bob.String() != "Bob (25) - Developer" {
 		fmt.Println("FAIL: Person Bob")
 		allPassed = false
 	}
@@ -165,7 +176,8 @@ func main() {
 	}
 
 	// Empty matrix
-	if Matrix{}.String() != "" {
+	emptyMatrix := Matrix{}
+	if emptyMatrix.String() != "" {
 		fmt.Println("FAIL: Empty matrix")
 		allPassed = false
 	}
