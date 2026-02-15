@@ -7,6 +7,20 @@ import (
 
 // Tests: Closures as state machines, function composition, middleware pattern
 //
+// KEY TAKEAWAYS:
+// - Closures capture variables by REFERENCE, not by value. Multiple returned functions
+//   (like try/reset in RateLimiter) share the same variable — mutating it in one affects the other.
+// - Named return values use = not := for assignment (they're already declared).
+// - range over a slice gives (index, value). Using just one variable gives you the INDEX (int),
+//   not the element — this caused "int is not a function" when iterating function slices.
+// - Use callNumber++ instead of callNumber += 1 — idiomatic Go.
+// - Iterator pattern: let the index go PAST len(s) on exhaustion. Using currIdx >= len(s) as
+//   the single exhaustion check is simpler than maintaining a separate boolean flag.
+//   Don't access s[currIdx] when currIdx >= len(s) — return a zero value (0, false) instead.
+// - Debounce needs a "called" boolean to track first invocation, since the default empty string ""
+//   would incorrectly match if the first real call passes "".
+// - Use early return or else-if to prevent fall-through between mutually exclusive branches.
+//
 // These are patterns you'll use constantly in Go backend development.
 //
 // 1. Implement RateLimiter(maxCalls int, window []int) func() bool
@@ -41,27 +55,88 @@ import (
 
 // TODO: Implement RateLimiter
 func RateLimiter(maxCalls int) (try func() bool, reset func()) {
-	return nil, nil
+	callNumber := 0
+	try = func() bool {
+		callNumber += 1
+		if callNumber > maxCalls {
+			return false
+		}
+		return true
+	}
+	reset = func() { callNumber = 0 }
+
+	return try, reset
+
 }
 
 // TODO: Implement Pipeline
 func Pipeline(fns ...func(string) string) func(string) string {
-	return nil
+
+	return func(startingInput string) string {
+		for _, fn := range fns {
+			startingInput = fn(startingInput)
+		}
+		return startingInput
+	}
+
 }
 
 // TODO: Implement Logger
+//   - Returns a function that prints "[prefix] [count]: message"
+//   - Count increments each call, starting at 1
+//   - Example: log := Logger("APP"); log("started") -> "[APP] [1]: started"
 func Logger(prefix string) func(string) {
-	return nil
+	count := 1
+
+	return func(message string) {
+		fmt.Printf("[%s] [%d]: %s\n", prefix, count, message)
+		count++
+	}
+
 }
 
 // TODO: Implement Iterator
+//   - Returns two closures sharing state
+//   - next() returns the current element and advances; bool=false if exhausted
+//   - hasNext() returns true if more elements remain
+//   - This is the Iterator pattern from Java/Python, built with closures
 func Iterator(s []int) (next func() (int, bool), hasNext func() bool) {
-	return nil, nil
+	var currIdx int = 0
+	next = func() (int, bool) {
+		if currIdx >= len(s) {
+			return 0, false
+		} else {
+			currElem := s[currIdx]
+			currIdx++
+			return currElem, true
+		}
+	}
+	hasNext = func() bool {
+		return currIdx < len(s)
+	}
+	return next, hasNext
 }
 
 // TODO: Implement Debounce
+//   - Returns a debounced version of fn
+//   - Simplified (no actual timing): only calls fn if the argument
+//     is DIFFERENT from the last call's argument
+//   - First call always executes
 func Debounce(fn func(string)) func(string) {
-	return nil
+	var lastArg string
+	ranOnce := false
+
+	return func(arg string) {
+		if !ranOnce {
+			lastArg = arg
+			ranOnce = true
+			fn(lastArg)
+		} else if lastArg != arg {
+			lastArg = arg
+			fn(lastArg)
+		}
+	}
+
 }
 
 func main() {
@@ -85,7 +160,7 @@ func main() {
 	shout := Pipeline(trim, upper, addBang)
 	fmt.Println(shout("  hello  ")) // HELLO!
 
-	identity := Pipeline() // empty pipeline
+	identity := Pipeline()             // empty pipeline
 	fmt.Println(identity("unchanged")) // unchanged
 
 	single := Pipeline(upper)
@@ -124,12 +199,12 @@ func main() {
 	var calls []string
 	fn := func(s string) { calls = append(calls, s) }
 	debounced := Debounce(fn)
-	debounced("a") // calls fn("a")
-	debounced("a") // skipped (same as last)
-	debounced("a") // skipped
-	debounced("b") // calls fn("b")
-	debounced("b") // skipped
-	debounced("a") // calls fn("a") (different from last)
+	debounced("a")                         // calls fn("a")
+	debounced("a")                         // skipped (same as last)
+	debounced("a")                         // skipped
+	debounced("b")                         // calls fn("b")
+	debounced("b")                         // skipped
+	debounced("a")                         // calls fn("a") (different from last)
 	fmt.Println("Debounced calls:", calls) // [a b a]
 
 	// Run test cases
