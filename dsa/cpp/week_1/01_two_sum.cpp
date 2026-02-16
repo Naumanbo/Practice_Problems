@@ -31,7 +31,13 @@ using namespace std;
 // Time: O(?)
 // Space: O(?)
 vector<int> twoSumBrute(vector<int>& nums, int target) {
-    // Your implementation
+    for (int i = 0; i < nums.size(); i++) {
+        for (int j = i + 1; j < nums.size(); j++ ) {
+            if (target == nums[i] + nums[j]) {
+                return vector<int>{i,j};
+            }
+        }
+    }
     return {};
 }
 
@@ -40,6 +46,14 @@ vector<int> twoSumBrute(vector<int>& nums, int target) {
 // Space: O(?)
 vector<int> twoSumOptimal(vector<int>& nums, int target) {
     // Your implementation
+    unordered_map<int, int> seen;
+    for (int i = 0; i < nums.size(); i++) {
+        int requiredValue = target - nums[i];
+        if (seen.find(requiredValue) != seen.end()) {
+            return vector<int>{i, seen[requiredValue]};
+        }
+        seen[nums[i]] = i;
+    }
     return {};
 }
 

@@ -25,6 +25,7 @@ Run: ./01_two_sum
 #include <string.h>
 #include <stdbool.h>
 
+
 // Result structure (since C can't return arrays easily)
 typedef struct {
     int indices[2];
@@ -37,6 +38,14 @@ typedef struct {
 TwoSumResult twoSumBrute(int* nums, int numsSize, int target) {
     TwoSumResult result = {{-1, -1}, false};
     // Your implementation
+    for (int i = 0; i < numsSize; i++) {
+        for (int j = i +1; j < numsSize; j++) {
+            if (target == nums[j] + nums[i]) {
+                result = (TwoSumResult){{i,j}, true};
+                return result;
+            }
+        }
+    }
     return result;
 }
 
@@ -47,6 +56,12 @@ TwoSumResult twoSumBrute(int* nums, int numsSize, int target) {
 TwoSumResult twoSumOptimal(int* nums, int numsSize, int target) {
     TwoSumResult result = {{-1, -1}, false};
     // Your implementation (hash table or sorted two-pointer)
+    map
+    for (int i = 0; i < numsSize; i++) {
+        for (int j = i + 1; j < numsSize; j++) {
+
+        }
+    }
     return result;
 }
 

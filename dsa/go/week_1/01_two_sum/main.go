@@ -26,6 +26,14 @@ import "fmt"
 // Space: O(?)
 func TwoSumBrute(nums []int, target int) []int {
 	// Your implementation
+	for i := 0; i < len(nums); i++ {
+		for j := i + 1; j < len(nums); j++ {
+			if nums[i]+nums[j] == target {
+				return []int{i, j}
+			}
+		}
+
+	}
 	return nil
 }
 
@@ -34,6 +42,16 @@ func TwoSumBrute(nums []int, target int) []int {
 // Space: O(?)
 func TwoSumOptimal(nums []int, target int) []int {
 	// Your implementation
+	seen := make(map[int]int, 0)
+	for i, val := range nums {
+		requiredValue := target - val
+		requiredIndex, ok := seen[requiredValue]
+		if ok {
+			return []int{i, requiredIndex}
+		}
+		seen[val] = i
+	}
+
 	return nil
 }
 

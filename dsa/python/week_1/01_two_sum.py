@@ -21,18 +21,33 @@ from typing import List
 
 
 def two_sum_brute(nums: List[int], target: int) -> List[int]:
+
     """
     Brute force approach.
 
-    Time: O(?)
-    Space: O(?)
+    Time: O(n^2)
+    Space: O(1)
 
     Your implementation:
     """
+    
+    indices = []
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            if target == nums[i] + nums[j]:
+                return [i, j]
+            
     pass
 
 
 def two_sum_optimal(nums: List[int], target: int) -> List[int]:
+    mapValues = {}
+    for i, num in enumerate(nums):
+        requiredValue = target - num
+        if requiredValue in mapValues:
+            return [mapValues[requiredValue], i]
+        mapValues[num] = i
+
     """
     Optimal approach using hash map.
 
