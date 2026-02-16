@@ -1,5 +1,14 @@
 package main
 
+// KEY TAKEAWAYS:
+// 1. switch t.Unit, not switch t — switching on a struct compares against structs, not fields
+// 2. %02X formats uint8 as 2-digit uppercase hex (zero-padded). uint8 max 255 = FF, perfect fit.
+// 3. "Prepend separator from index 1" pattern (if j > 0 { add comma }) avoids trailing comma bugs
+// 4. Guard clauses: handle edge cases (d == 0) as early returns at the top, not special cases at the bottom
+// 5. Integer division + mod for decomposition: hours = d/3600, minutes = (d%3600)/60, seconds = d%60
+// 6. String concatenation with + works but is O(n²) in loops (immutable strings). Fine for small builds.
+// 7. Conditional space insertion between components: only add " " if more parts follow
+
 import (
 	"fmt"
 	"strings"
@@ -36,13 +45,54 @@ type Temperature struct {
 }
 
 // TODO: Implement String() for Temperature
-func (t Temperature) String() string { return "" } // TODO: implement
+func (t Temperature) String() string {
+
+	switch t.Unit {
+	case 'C':
+		return fmt.Sprintf("%g°C", t.Value)
+	case 'F':
+		return fmt.Sprintf("%g°F", t.Value)
+	default:
+		return "Unknown rune or value"
+
+	}
+} // TODO: implement
 
 // Duration represents a time duration in seconds
 type Duration int // seconds
 
 // TODO: Implement String() for Duration
-func (d Duration) String() string { return "" } // TODO: implement
+// 2. Duration - represents time in seconds
+//   - Format as "Xh Ym Zs", omitting zero components
+//   - Examples: "1h 30m 0s" -> "1h 30m", "90s" -> "1m 30s", "3600s" -> "1h"
+func (d Duration) String() string {
+	if d == 0 {
+		return "0s"
+	}
+
+	hours := d / 3600
+	minutes := (d % 3600) / 60
+	seconds := d % 60
+
+	ret := ""
+	if hours != 0 {
+		ret += fmt.Sprintf("%dh", hours)
+		if minutes != 0 || seconds != 0 {
+			ret += " "
+		}
+	}
+	if minutes != 0 {
+		ret += fmt.Sprintf("%dm", minutes)
+		if seconds != 0 {
+			ret += " "
+		}
+	}
+	if seconds != 0 {
+		ret += fmt.Sprintf("%ds", seconds)
+	}
+
+	return ret
+} // TODO: implement
 
 // RGB represents a color
 type RGB struct {
@@ -50,7 +100,9 @@ type RGB struct {
 }
 
 // TODO: Implement String() for RGB
-func (c RGB) String() string { return "" } // TODO: implement
+func (c RGB) String() string {
+	return fmt.Sprintf("#%02X%02X%02X", c.R, c.G, c.B)
+} // TODO: implement
 
 // Person represents a person
 type Person struct {
@@ -59,14 +111,43 @@ type Person struct {
 	Occupation string
 }
 
+//    - Format: "Name (Age) - Occupation"
+//    - Example: "Alice (30) - Engineer"
+//
+
 // TODO: Implement String() for Person
-func (p Person) String() string { return "" } // TODO: implement
+func (p Person) String() string {
+
+	return fmt.Sprintf("%s (%d) - %s", p.Name, p.Age, p.Occupation)
+} // TODO: implement
 
 // Matrix represents a 2D grid of integers
 type Matrix [][]int
 
 // TODO: Implement String() for Matrix
-func (m Matrix) String() string { return "" } // TODO: implement
+//   - Format as rows with brackets
+//   - Example: [[1,2],[3,4]] -> "[1, 2]\n[3, 4]"
+func (m Matrix) String() string {
+	ret := ""
+	for i, row := range m {
+		ret += "["
+		for j, val := range row {
+			if j >= len(row)-1 {
+				ret += fmt.Sprintf("%d", val)
+			} else {
+				ret += fmt.Sprintf("%d, ", val)
+			}
+		}
+		if i >= len(m)-1 {
+			ret += "]"
+		} else {
+			ret += "]\n"
+		}
+	}
+
+	fmt.Println(ret)
+	return ret
+} // TODO: implement
 
 func main() {
 	// Test Temperature
