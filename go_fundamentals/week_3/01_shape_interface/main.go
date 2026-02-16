@@ -175,8 +175,95 @@ func main() {
 
 	// LargestShape finds correct shape
 	shapes2 := []Shape{Rectangle{2, 2}, Circle{10}, Triangle{3, 4, 5}}
-	if largest := LargestShape(shapes2); !almostEqual(largest.Area(), Circle{10}.Area()) {
+	bigCircle := Circle{10}
+	if largest2 := LargestShape(shapes2); !almostEqual(largest2.Area(), bigCircle.Area()) {
 		fmt.Println("FAIL: LargestShape didn't find circle")
+		allPassed = false
+	}
+
+	// === Additional Rectangle tests ===
+	// square
+	sq := Rectangle{width: 5, height: 5}
+	if !almostEqual(sq.Area(), 25) || !almostEqual(sq.Perimeter(), 20) {
+		fmt.Println("FAIL: Rectangle square 5x5")
+		allPassed = false
+	}
+	// very thin rectangle
+	thin := Rectangle{width: 100, height: 0.1}
+	if !almostEqual(thin.Area(), 10) || !almostEqual(thin.Perimeter(), 200.2) {
+		fmt.Println("FAIL: Rectangle thin 100x0.1")
+		allPassed = false
+	}
+	// unit rectangle
+	unit := Rectangle{width: 1, height: 1}
+	if !almostEqual(unit.Area(), 1) || !almostEqual(unit.Perimeter(), 4) {
+		fmt.Println("FAIL: Rectangle unit 1x1")
+		allPassed = false
+	}
+
+	// === Additional Circle tests ===
+	// zero radius
+	zeroCircle := Circle{radius: 0}
+	if !almostEqual(zeroCircle.Area(), 0) || !almostEqual(zeroCircle.Perimeter(), 0) {
+		fmt.Println("FAIL: Circle radius 0")
+		allPassed = false
+	}
+	// large radius
+	bigC := Circle{radius: 100}
+	if !almostEqual(bigC.Area(), math.Pi*10000) || !almostEqual(bigC.Perimeter(), 200*math.Pi) {
+		fmt.Println("FAIL: Circle radius 100")
+		allPassed = false
+	}
+
+	// === Additional Triangle tests ===
+	// isosceles triangle
+	iso := Triangle{a: 5, b: 5, c: 6}
+	isoS := (5.0 + 5.0 + 6.0) / 2
+	isoExpected := math.Sqrt(isoS * (isoS - 5) * (isoS - 5) * (isoS - 6))
+	if !almostEqual(iso.Area(), isoExpected) || !almostEqual(iso.Perimeter(), 16) {
+		fmt.Println("FAIL: Isosceles triangle 5-5-6")
+		allPassed = false
+	}
+
+	// === Additional TotalArea tests ===
+	// single shape
+	if !almostEqual(TotalArea([]Shape{Rectangle{3, 4}}), 12) {
+		fmt.Println("FAIL: TotalArea single rectangle")
+		allPassed = false
+	}
+	// all same type
+	allCircles := []Shape{Circle{1}, Circle{2}, Circle{3}}
+	expectedTotal := math.Pi*1 + math.Pi*4 + math.Pi*9
+	if !almostEqual(TotalArea(allCircles), expectedTotal) {
+		fmt.Println("FAIL: TotalArea all circles")
+		allPassed = false
+	}
+
+	// === Additional LargestShape tests ===
+	// single shape
+	singleShape := []Shape{Rectangle{2, 3}}
+	if ls := LargestShape(singleShape); !almostEqual(ls.Area(), 6) {
+		fmt.Println("FAIL: LargestShape single shape")
+		allPassed = false
+	}
+	// all same area
+	sameArea := []Shape{Rectangle{2, 6}, Rectangle{3, 4}, Rectangle{1, 12}}
+	if ls := LargestShape(sameArea); ls == nil {
+		fmt.Println("FAIL: LargestShape all same area should return one")
+		allPassed = false
+	}
+	// rectangle is largest
+	shapes3 := []Shape{Circle{1}, Rectangle{100, 100}, Triangle{3, 4, 5}}
+	if ls := LargestShape(shapes3); !almostEqual(ls.Area(), 10000) {
+		fmt.Println("FAIL: LargestShape rectangle largest")
+		allPassed = false
+	}
+	// triangle is largest
+	shapes4 := []Shape{Rectangle{1, 1}, Circle{0.5}, Triangle{10, 10, 10}}
+	triS := (10.0 + 10.0 + 10.0) / 2
+	triArea := math.Sqrt(triS * (triS - 10) * (triS - 10) * (triS - 10))
+	if ls := LargestShape(shapes4); !almostEqual(ls.Area(), triArea) {
+		fmt.Println("FAIL: LargestShape triangle largest")
 		allPassed = false
 	}
 

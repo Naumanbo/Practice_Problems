@@ -321,6 +321,123 @@ func main() {
 		allPassed = false
 	}
 
+	// === Additional edge case tests ===
+
+	// PopFront on empty list
+	emptyLL := &LinkedList{}
+	if _, ok := emptyLL.PopFront(); ok {
+		fmt.Println("FAIL: PopFront on empty should return false")
+		allPassed = false
+	}
+
+	// Find on empty list
+	if emptyLL.Find(1) != nil {
+		fmt.Println("FAIL: Find on empty should return nil")
+		allPassed = false
+	}
+
+	// Delete on empty list
+	if emptyLL.Delete(1) {
+		fmt.Println("FAIL: Delete on empty should return false")
+		allPassed = false
+	}
+
+	// ToSlice on empty list
+	if len(emptyLL.ToSlice()) != 0 {
+		fmt.Println("FAIL: ToSlice on empty should return empty slice")
+		allPassed = false
+	}
+
+	// PushFront multiple then verify order
+	t10 := &LinkedList{}
+	t10.PushFront(3)
+	t10.PushFront(2)
+	t10.PushFront(1)
+	if fmt.Sprint(t10.ToSlice()) != "[1 2 3]" {
+		fmt.Println("FAIL: PushFront order, got", t10.ToSlice())
+		allPassed = false
+	}
+
+	// PushBack then PushFront interleaved
+	t11 := &LinkedList{}
+	t11.PushBack(2)
+	t11.PushFront(1)
+	t11.PushBack(3)
+	if fmt.Sprint(t11.ToSlice()) != "[1 2 3]" {
+		fmt.Println("FAIL: Mixed Push order, got", t11.ToSlice())
+		allPassed = false
+	}
+
+	// Delete head when multiple elements
+	t12 := &LinkedList{}
+	t12.PushBack(10)
+	t12.PushBack(20)
+	t12.PushBack(30)
+	t12.Delete(10)
+	if fmt.Sprint(t12.ToSlice()) != "[20 30]" || t12.Size() != 2 {
+		fmt.Println("FAIL: Delete head of 3-element list")
+		allPassed = false
+	}
+
+	// Delete tail when multiple elements
+	t13 := &LinkedList{}
+	t13.PushBack(10)
+	t13.PushBack(20)
+	t13.PushBack(30)
+	t13.Delete(30)
+	if fmt.Sprint(t13.ToSlice()) != "[10 20]" || t13.Size() != 2 {
+		fmt.Println("FAIL: Delete tail of 3-element list")
+		allPassed = false
+	}
+
+	// Reverse preserves size
+	t14 := &LinkedList{}
+	t14.PushBack(1)
+	t14.PushBack(2)
+	t14.PushBack(3)
+	t14.Reverse()
+	if t14.Size() != 3 {
+		fmt.Println("FAIL: Reverse should preserve size")
+		allPassed = false
+	}
+	if fmt.Sprint(t14.ToSlice()) != "[3 2 1]" {
+		fmt.Println("FAIL: Reverse 3 elements, got", t14.ToSlice())
+		allPassed = false
+	}
+
+	// Double reverse returns original order
+	t15 := &LinkedList{}
+	t15.PushBack(1)
+	t15.PushBack(2)
+	t15.PushBack(3)
+	t15.Reverse()
+	t15.Reverse()
+	if fmt.Sprint(t15.ToSlice()) != "[1 2 3]" {
+		fmt.Println("FAIL: Double reverse should restore original order")
+		allPassed = false
+	}
+
+	// Find returns first occurrence
+	t16 := &LinkedList{}
+	t16.PushBack(5)
+	t16.PushBack(10)
+	t16.PushBack(5)
+	found := t16.Find(5)
+	if found == nil || found.Value != 5 {
+		fmt.Println("FAIL: Find should return node")
+		allPassed = false
+	}
+
+	// PopFront returns correct value and decrements size
+	t17 := &LinkedList{}
+	t17.PushBack(100)
+	t17.PushBack(200)
+	val2, ok2 := t17.PopFront()
+	if val2 != 100 || !ok2 || t17.Size() != 1 {
+		fmt.Println("FAIL: PopFront value and size")
+		allPassed = false
+	}
+
 	if allPassed {
 		fmt.Println("\nAll tests passed!")
 	}

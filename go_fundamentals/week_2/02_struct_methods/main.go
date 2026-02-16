@@ -198,6 +198,70 @@ func main() {
 		allPassed = false
 	}
 
+	// === Additional edge case tests ===
+
+	// Value embedding: Admin gets a COPY, not shared reference
+	u5 := User{Base: Base{ID: 50, CreatedAt: "2026-01-01"}, Name: "Eve", Email: "eve@test.com"}
+	admin2 := Promote(&u5, []string{"read"})
+	admin2.UpdateEmail("admin@test.com")
+	if u5.Email != "eve@test.com" {
+		fmt.Println("FAIL: Value embedding - original user should not be modified")
+		allPassed = false
+	}
+	if admin2.Email != "admin@test.com" {
+		fmt.Println("FAIL: Value embedding - admin copy should be modified")
+		allPassed = false
+	}
+
+	// Base.Describe accessible through Admin (two levels of embedding)
+	admin3 := Admin{User: User{Base: Base{ID: 7, CreatedAt: "2026-03-01"}, Name: "Frank", Email: "f@test.com"}, Permissions: []string{}}
+	if admin3.Base.Describe() != "ID: 7, Created: 2026-03-01" {
+		fmt.Println("FAIL: Admin should access Base.Describe through embedding chain")
+		allPassed = false
+	}
+
+	// Promoted field access through Admin
+	if admin3.ID != 7 || admin3.CreatedAt != "2026-03-01" {
+		fmt.Println("FAIL: Admin promoted fields from Base")
+		allPassed = false
+	}
+	if admin3.Name != "Frank" || admin3.Email != "f@test.com" {
+		fmt.Println("FAIL: Admin promoted fields from User")
+		allPassed = false
+	}
+
+	// HasPermission with single permission
+	admin4 := Admin{User: u2, Permissions: []string{"only"}}
+	if !admin4.HasPermission("only") {
+		fmt.Println("FAIL: HasPermission single permission present")
+		allPassed = false
+	}
+	if admin4.HasPermission("other") {
+		fmt.Println("FAIL: HasPermission single permission absent")
+		allPassed = false
+	}
+
+	// HasPermission case sensitivity
+	admin5 := Admin{User: u2, Permissions: []string{"Read", "Write"}}
+	if admin5.HasPermission("read") {
+		fmt.Println("FAIL: HasPermission should be case-sensitive")
+		allPassed = false
+	}
+
+	// Promote with nil-like empty permissions
+	promoted2 := Promote(&u2, []string{})
+	if len(promoted2.Permissions) != 0 {
+		fmt.Println("FAIL: Promote with empty permissions")
+		allPassed = false
+	}
+
+	// User.Describe overrides Base.Describe
+	u6 := User{Base: Base{ID: 1, CreatedAt: "now"}, Name: "Test", Email: "t@t.com"}
+	if u6.Describe() == u6.Base.Describe() {
+		fmt.Println("FAIL: User.Describe should differ from Base.Describe")
+		allPassed = false
+	}
+
 	if allPassed {
 		fmt.Println("\nAll tests passed!")
 	}

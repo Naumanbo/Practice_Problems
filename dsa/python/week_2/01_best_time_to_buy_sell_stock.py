@@ -44,6 +44,18 @@ if __name__ == "__main__":
         {"prices": [1], "expected": 0, "desc": "single element"},
         {"prices": [2, 1], "expected": 0, "desc": "two elements decreasing"},
         {"prices": [1, 2], "expected": 1, "desc": "two elements increasing"},
+        {"prices": [10, 1, 10], "expected": 9, "desc": "V-shape recovery"},
+        {"prices": [3, 8, 2, 5], "expected": 5, "desc": "peak then valley"},
+        {"prices": [1, 5, 2, 8], "expected": 7, "desc": "multiple peaks, best at end"},
+        {"prices": [5, 4, 3, 2, 1, 10], "expected": 9, "desc": "min at end then spike"},
+        {"prices": [0, 0, 0], "expected": 0, "desc": "all zeros"},
+        {"prices": [5, 5], "expected": 0, "desc": "two same"},
+        {"prices": [3, 1, 100, 2, 4], "expected": 99, "desc": "spike in middle"},
+        {"prices": [1, 10, 1, 10, 1], "expected": 9, "desc": "oscillating"},
+        {"prices": [0, 1], "expected": 1, "desc": "zero then one"},
+        {"prices": [10000, 1, 10000], "expected": 9999, "desc": "near constraint max"},
+        {"prices": [2, 1, 2, 0, 1], "expected": 1, "desc": "multiple dips"},
+        {"prices": [1, 1, 1, 1, 2], "expected": 1, "desc": "flat then rise"},
     ]
 
     all_passed = True

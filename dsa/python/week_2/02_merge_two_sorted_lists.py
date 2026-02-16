@@ -69,6 +69,16 @@ if __name__ == "__main__":
         {"list1": [1, 3, 5], "list2": [2, 4, 6], "expected": [1, 2, 3, 4, 5, 6], "desc": "interleaved"},
         {"list1": [1, 2, 3], "list2": [4, 5, 6], "expected": [1, 2, 3, 4, 5, 6], "desc": "no overlap"},
         {"list1": [5], "list2": [1, 2, 3], "expected": [1, 2, 3, 5], "desc": "single vs multiple"},
+        {"list1": [1, 1, 1], "list2": [1, 1], "expected": [1, 1, 1, 1, 1], "desc": "all duplicates"},
+        {"list1": [-3, -1, 0], "list2": [-2, 5], "expected": [-3, -2, -1, 0, 5], "desc": "negative values"},
+        {"list1": [1], "list2": [2], "expected": [1, 2], "desc": "single element each"},
+        {"list1": [2], "list2": [1], "expected": [1, 2], "desc": "single elements reversed"},
+        {"list1": [1], "list2": [2, 3, 4, 5, 6, 7, 8, 9, 10], "expected": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "desc": "one short one long"},
+        {"list1": [5, 5, 5], "list2": [5, 5, 5], "expected": [5, 5, 5, 5, 5, 5], "desc": "all same values"},
+        {"list1": [1, 2, 3], "list2": [1, 2, 3], "expected": [1, 1, 2, 2, 3, 3], "desc": "identical lists"},
+        {"list1": [1000000], "list2": [-1000000], "expected": [-1000000, 1000000], "desc": "large values"},
+        {"list1": [-100, -50, 0, 50, 100], "list2": [-75, -25, 25, 75], "expected": [-100, -75, -50, -25, 0, 25, 50, 75, 100], "desc": "interleaved with negatives"},
+        {"list1": [1, 2, 3, 4, 5], "list2": [6, 7, 8, 9, 10], "expected": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "desc": "no overlap longer"},
     ]
 
     all_passed = True

@@ -30,6 +30,18 @@ func main() {
 		{[]int{1, 2, 3, 4}, 10, "all positive"},
 		{[]int{-1, 0, -2}, 0, "zero is max"},
 		{[]int{8, -19, 5, -4, 20}, 21, "recovery after negative"},
+		{[]int{1, -1, 1, -1, 1}, 1, "alternating"},
+		{[]int{5, 6, -100, 7, 8}, 15, "large negative breaks subarray"},
+		{[]int{10, -1, -1, -1, -1}, 10, "subarray at start"},
+		{[]int{-1, -1, -1, -1, 10}, 10, "subarray at end"},
+		{[]int{5, -10, 5}, 5, "two equal subarrays"},
+		{[]int{100}, 100, "single large positive"},
+		{[]int{10, -5, 10, -5, 10}, 20, "worth keeping negatives"},
+		{[]int{1, -1, 1, -1, 2}, 2, "max at end"},
+		{[]int{3, -1, 2, -1, 4}, 7, "entire array is max"},
+		{[]int{0}, 0, "single zero"},
+		{[]int{-10000}, -10000, "single large negative"},
+		{[]int{1, 2, -1, 3, -2, 4}, 7, "scattered negatives"},
 	}
 
 	allPassed := true

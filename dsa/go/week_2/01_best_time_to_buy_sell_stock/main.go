@@ -31,6 +31,18 @@ func main() {
 		{[]int{1}, 0, "single element"},
 		{[]int{2, 1}, 0, "two elements decreasing"},
 		{[]int{1, 2}, 1, "two elements increasing"},
+		{[]int{10, 1, 10}, 9, "V-shape recovery"},
+		{[]int{3, 8, 2, 5}, 5, "peak then valley"},
+		{[]int{1, 5, 2, 8}, 7, "multiple peaks best at end"},
+		{[]int{5, 4, 3, 2, 1, 10}, 9, "min at end then spike"},
+		{[]int{0, 0, 0}, 0, "all zeros"},
+		{[]int{5, 5}, 0, "two same"},
+		{[]int{3, 1, 100, 2, 4}, 99, "spike in middle"},
+		{[]int{1, 10, 1, 10, 1}, 9, "oscillating"},
+		{[]int{0, 1}, 1, "zero then one"},
+		{[]int{10000, 1, 10000}, 9999, "near constraint max"},
+		{[]int{2, 1, 2, 0, 1}, 1, "multiple dips"},
+		{[]int{1, 1, 1, 1, 2}, 1, "flat then rise"},
 	}
 
 	allPassed := true

@@ -48,6 +48,18 @@ if __name__ == "__main__":
         {"nums": [1, 2, 3, 4], "expected": 10, "desc": "all positive"},
         {"nums": [-1, 0, -2], "expected": 0, "desc": "zero is max"},
         {"nums": [8, -19, 5, -4, 20], "expected": 21, "desc": "recovery after negative"},
+        {"nums": [1, -1, 1, -1, 1], "expected": 1, "desc": "alternating"},
+        {"nums": [5, 6, -100, 7, 8], "expected": 15, "desc": "large negative breaks subarray"},
+        {"nums": [10, -1, -1, -1, -1], "expected": 10, "desc": "subarray at start"},
+        {"nums": [-1, -1, -1, -1, 10], "expected": 10, "desc": "subarray at end"},
+        {"nums": [5, -10, 5], "expected": 5, "desc": "two equal subarrays"},
+        {"nums": [100], "expected": 100, "desc": "single large positive"},
+        {"nums": [10, -5, 10, -5, 10], "expected": 20, "desc": "worth keeping negatives"},
+        {"nums": [1, -1, 1, -1, 2], "expected": 2, "desc": "max at end"},
+        {"nums": [3, -1, 2, -1, 4], "expected": 7, "desc": "entire array is max"},
+        {"nums": [0], "expected": 0, "desc": "single zero"},
+        {"nums": [-10000], "expected": -10000, "desc": "single large negative"},
+        {"nums": [1, 2, -1, 3, -2, 4], "expected": 7, "desc": "scattered negatives"},
     ]
 
     all_passed = True

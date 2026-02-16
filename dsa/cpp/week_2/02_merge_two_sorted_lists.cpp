@@ -67,6 +67,14 @@ int main() {
         {{1, 3, 5}, {2, 4, 6}, {1, 2, 3, 4, 5, 6}, "interleaved"},
         {{1, 2, 3}, {4, 5, 6}, {1, 2, 3, 4, 5, 6}, "no overlap"},
         {{5}, {1, 2, 3}, {1, 2, 3, 5}, "single vs multiple"},
+        {{1, 1, 1}, {1, 1}, {1, 1, 1, 1, 1}, "all duplicates"},
+        {{-3, -1, 0}, {-2, 5}, {-3, -2, -1, 0, 5}, "negative values"},
+        {{1}, {2}, {1, 2}, "single element each"},
+        {{2}, {1}, {1, 2}, "single elements reversed"},
+        {{5, 5, 5}, {5, 5, 5}, {5, 5, 5, 5, 5, 5}, "all same values"},
+        {{1, 2, 3}, {1, 2, 3}, {1, 1, 2, 2, 3, 3}, "identical lists"},
+        {{1000000}, {-1000000}, {-1000000, 1000000}, "large values"},
+        {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, "no overlap longer"},
     };
 
     bool allPassed = true;

@@ -71,6 +71,16 @@ func main() {
 		{[]int{1, 3, 5}, []int{2, 4, 6}, []int{1, 2, 3, 4, 5, 6}, "interleaved"},
 		{[]int{1, 2, 3}, []int{4, 5, 6}, []int{1, 2, 3, 4, 5, 6}, "no overlap"},
 		{[]int{5}, []int{1, 2, 3}, []int{1, 2, 3, 5}, "single vs multiple"},
+		{[]int{1, 1, 1}, []int{1, 1}, []int{1, 1, 1, 1, 1}, "all duplicates"},
+		{[]int{-3, -1, 0}, []int{-2, 5}, []int{-3, -2, -1, 0, 5}, "negative values"},
+		{[]int{1}, []int{2}, []int{1, 2}, "single element each"},
+		{[]int{2}, []int{1}, []int{1, 2}, "single elements reversed"},
+		{[]int{1}, []int{2, 3, 4, 5, 6, 7, 8, 9, 10}, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, "one short one long"},
+		{[]int{5, 5, 5}, []int{5, 5, 5}, []int{5, 5, 5, 5, 5, 5}, "all same values"},
+		{[]int{1, 2, 3}, []int{1, 2, 3}, []int{1, 1, 2, 2, 3, 3}, "identical lists"},
+		{[]int{1000000}, []int{-1000000}, []int{-1000000, 1000000}, "large values"},
+		{[]int{-100, -50, 0, 50, 100}, []int{-75, -25, 25, 75}, []int{-100, -75, -50, -25, 0, 25, 50, 75, 100}, "interleaved with negatives"},
+		{[]int{1, 2, 3, 4, 5}, []int{6, 7, 8, 9, 10}, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, "no overlap longer"},
 	}
 
 	allPassed := true

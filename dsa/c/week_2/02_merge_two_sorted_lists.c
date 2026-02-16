@@ -87,6 +87,13 @@ int main() {
         {{1, 3, 5}, 3, {2, 4, 6}, 3, {1, 2, 3, 4, 5, 6}, 6, "interleaved"},
         {{1, 2, 3}, 3, {4, 5, 6}, 3, {1, 2, 3, 4, 5, 6}, 6, "no overlap"},
         {{5}, 1, {1, 2, 3}, 3, {1, 2, 3, 5}, 4, "single vs multiple"},
+        {{1, 1, 1}, 3, {1, 1}, 2, {1, 1, 1, 1, 1}, 5, "all duplicates"},
+        {{-3, -1, 0}, 3, {-2, 5}, 2, {-3, -2, -1, 0, 5}, 5, "negative values"},
+        {{1}, 1, {2}, 1, {1, 2}, 2, "single element each"},
+        {{2}, 1, {1}, 1, {1, 2}, 2, "single elements reversed"},
+        {{5, 5, 5}, 3, {5, 5, 5}, 3, {5, 5, 5, 5, 5, 5}, 6, "all same values"},
+        {{1, 2, 3}, 3, {1, 2, 3}, 3, {1, 1, 2, 2, 3, 3}, 6, "identical lists"},
+        {{1, 2, 3, 4, 5}, 5, {6}, 1, {1, 2, 3, 4, 5, 6}, 6, "no overlap longer"},
     };
 
     int numTests = sizeof(tests) / sizeof(tests[0]);
