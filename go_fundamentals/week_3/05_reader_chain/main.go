@@ -140,7 +140,7 @@ func main() {
 	// Run test cases
 	allPassed := true
 
-	// UpperReader tests
+	// === UpperReader tests ===
 	if readAll(&UpperReader{strings.NewReader("abc")}) != "ABC" {
 		println("FAIL: UpperReader abc")
 		allPassed = false
@@ -153,8 +153,28 @@ func main() {
 		println("FAIL: UpperReader empty")
 		allPassed = false
 	}
+	// mixed case with punctuation
+	if readAll(&UpperReader{strings.NewReader("Hello, World!")}) != "HELLO, WORLD!" {
+		println("FAIL: UpperReader mixed case")
+		allPassed = false
+	}
+	// only symbols and numbers (no change)
+	if readAll(&UpperReader{strings.NewReader("123!@#")}) != "123!@#" {
+		println("FAIL: UpperReader no letters")
+		allPassed = false
+	}
+	// single character
+	if readAll(&UpperReader{strings.NewReader("z")}) != "Z" {
+		println("FAIL: UpperReader single char")
+		allPassed = false
+	}
+	// spaces and tabs
+	if readAll(&UpperReader{strings.NewReader("a b\tc")}) != "A B\tC" {
+		println("FAIL: UpperReader whitespace preserved")
+		allPassed = false
+	}
 
-	// FilterReader tests
+	// === FilterReader tests ===
 	isDigit := func(b byte) bool { return unicode.IsDigit(rune(b)) }
 	if readAll(&FilterReader{strings.NewReader("a1b2c3"), isDigit}) != "abc" {
 		println("FAIL: FilterReader digits")
@@ -164,8 +184,31 @@ func main() {
 		println("FAIL: FilterReader nothing to filter")
 		allPassed = false
 	}
+	// filter everything
+	allMatch := func(b byte) bool { return true }
+	if readAll(&FilterReader{strings.NewReader("hello"), allMatch}) != "" {
+		println("FAIL: FilterReader remove all")
+		allPassed = false
+	}
+	// filter nothing
+	noMatch := func(b byte) bool { return false }
+	if readAll(&FilterReader{strings.NewReader("hello"), noMatch}) != "hello" {
+		println("FAIL: FilterReader remove none")
+		allPassed = false
+	}
+	// empty input
+	if readAll(&FilterReader{strings.NewReader(""), isDigit}) != "" {
+		println("FAIL: FilterReader empty input")
+		allPassed = false
+	}
+	// filter spaces
+	isSpaceFn := func(b byte) bool { return b == ' ' }
+	if readAll(&FilterReader{strings.NewReader("a b c"), isSpaceFn}) != "abc" {
+		println("FAIL: FilterReader spaces")
+		allPassed = false
+	}
 
-	// LimitReader tests
+	// === LimitReader tests ===
 	if readAll(&LimitReader{strings.NewReader("hello"), 3}) != "hel" {
 		println("FAIL: LimitReader 3")
 		allPassed = false
@@ -178,8 +221,23 @@ func main() {
 		println("FAIL: LimitReader 0")
 		allPassed = false
 	}
+	// limit exact length
+	if readAll(&LimitReader{strings.NewReader("abc"), 3}) != "abc" {
+		println("FAIL: LimitReader exact length")
+		allPassed = false
+	}
+	// limit 1
+	if readAll(&LimitReader{strings.NewReader("hello"), 1}) != "h" {
+		println("FAIL: LimitReader 1")
+		allPassed = false
+	}
+	// empty source
+	if readAll(&LimitReader{strings.NewReader(""), 5}) != "" {
+		println("FAIL: LimitReader empty source")
+		allPassed = false
+	}
 
-	// ChainReader tests
+	// === ChainReader tests ===
 	cr := &ChainReader{readers: []io.Reader{
 		strings.NewReader("a"),
 		strings.NewReader("b"),
@@ -189,10 +247,46 @@ func main() {
 		println("FAIL: ChainReader abc")
 		allPassed = false
 	}
-
-	// Empty chain
+	// empty chain
 	if readAll(&ChainReader{readers: []io.Reader{}}) != "" {
 		println("FAIL: ChainReader empty")
+		allPassed = false
+	}
+	// single reader
+	cr2 := &ChainReader{readers: []io.Reader{strings.NewReader("only")}}
+	if readAll(cr2) != "only" {
+		println("FAIL: ChainReader single reader")
+		allPassed = false
+	}
+	// chain with empty readers mixed in
+	cr3 := &ChainReader{readers: []io.Reader{
+		strings.NewReader(""),
+		strings.NewReader("hello"),
+		strings.NewReader(""),
+		strings.NewReader("world"),
+		strings.NewReader(""),
+	}}
+	if readAll(cr3) != "helloworld" {
+		println("FAIL: ChainReader with empty readers")
+		allPassed = false
+	}
+
+	// === Chained transformations ===
+	// UpperReader + FilterReader
+	srcChain := strings.NewReader("Hello World 123")
+	chained2 := &FilterReader{&UpperReader{srcChain}, isDigit}
+	if readAll(chained2) != "HELLO WORLD " {
+		println("FAIL: Upper then Filter digits")
+		allPassed = false
+	}
+	// LimitReader on ChainReader
+	cr4 := &ChainReader{readers: []io.Reader{
+		strings.NewReader("abc"),
+		strings.NewReader("def"),
+	}}
+	limited := &LimitReader{cr4, 4}
+	if readAll(limited) != "abcd" {
+		println("FAIL: LimitReader on ChainReader")
 		allPassed = false
 	}
 

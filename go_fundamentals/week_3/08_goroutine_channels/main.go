@@ -119,7 +119,7 @@ func main() {
 	// Run test cases
 	allPassed := true
 
-	// Squarer tests
+	// === Squarer tests ===
 	sq := Squarer([]int{0, -2, 3})
 	sqMap := make(map[int]bool)
 	for _, v := range sq {
@@ -129,29 +129,91 @@ func main() {
 		fmt.Println("FAIL: Squarer with 0 and negative")
 		allPassed = false
 	}
-
-	// Empty squarer
+	// empty
 	if len(Squarer([]int{})) != 0 {
 		fmt.Println("FAIL: Squarer empty")
 		allPassed = false
 	}
+	// single element
+	sq1 := Squarer([]int{7})
+	if len(sq1) != 1 || sq1[0] != 49 {
+		fmt.Println("FAIL: Squarer single element")
+		allPassed = false
+	}
+	// all zeros
+	sqZero := Squarer([]int{0, 0, 0})
+	for _, v := range sqZero {
+		if v != 0 {
+			fmt.Println("FAIL: Squarer all zeros")
+			allPassed = false
+			break
+		}
+	}
+	// large input (verify no deadlock)
+	largeSq := Squarer([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+	if len(largeSq) != 10 {
+		fmt.Println("FAIL: Squarer large input count")
+		allPassed = false
+	}
 
-	// ParallelSum single slice
+	// === ParallelSum tests ===
 	if ParallelSum([][]int{{1, 2, 3}}) != 6 {
 		fmt.Println("FAIL: ParallelSum single slice")
 		allPassed = false
 	}
-
-	// ParallelSum empty
 	if ParallelSum([][]int{}) != 0 {
 		fmt.Println("FAIL: ParallelSum empty")
 		allPassed = false
 	}
+	// slices with zeros
+	if ParallelSum([][]int{{0, 0}, {0, 0}}) != 0 {
+		fmt.Println("FAIL: ParallelSum all zeros")
+		allPassed = false
+	}
+	// negative numbers
+	if ParallelSum([][]int{{-1, -2}, {3, 4}}) != 4 {
+		fmt.Println("FAIL: ParallelSum negatives")
+		allPassed = false
+	}
+	// many slices
+	if ParallelSum([][]int{{1}, {2}, {3}, {4}, {5}}) != 15 {
+		fmt.Println("FAIL: ParallelSum many single-element slices")
+		allPassed = false
+	}
+	// empty inner slices
+	if ParallelSum([][]int{{}, {1, 2}, {}}) != 3 {
+		fmt.Println("FAIL: ParallelSum with empty inner slices")
+		allPassed = false
+	}
 
-	// IsPrimeParallel checks
+	// === IsPrimeParallel tests ===
 	pr := IsPrimeParallel([]int{1, 2, 4, 7})
 	if pr[1] != false || pr[2] != true || pr[4] != false || pr[7] != true {
 		fmt.Println("FAIL: IsPrimeParallel basic")
+		allPassed = false
+	}
+	// edge cases
+	pr2 := IsPrimeParallel([]int{0, 1, 2, 3})
+	if pr2[0] != false || pr2[1] != false || pr2[2] != true || pr2[3] != true {
+		fmt.Println("FAIL: IsPrimeParallel edge cases 0,1,2,3")
+		allPassed = false
+	}
+	// larger primes
+	pr3 := IsPrimeParallel([]int{97, 100, 101})
+	if pr3[97] != true || pr3[100] != false || pr3[101] != true {
+		fmt.Println("FAIL: IsPrimeParallel larger numbers")
+		allPassed = false
+	}
+	// single element
+	pr4 := IsPrimeParallel([]int{13})
+	if pr4[13] != true {
+		fmt.Println("FAIL: IsPrimeParallel single prime")
+		allPassed = false
+	}
+	// empty input
+	pr5 := IsPrimeParallel([]int{})
+	if len(pr5) != 0 {
+		fmt.Println("FAIL: IsPrimeParallel empty")
 		allPassed = false
 	}
 

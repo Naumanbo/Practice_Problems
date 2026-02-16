@@ -135,7 +135,7 @@ func main() {
 	// Run test cases
 	allPassed := true
 
-	// RaceTwo - verify faster wins
+	// === RaceTwo tests ===
 	w := RaceTwo(
 		func() string { time.Sleep(50 * time.Millisecond); return "A" },
 		func() string { time.Sleep(5 * time.Millisecond); return "B" },
@@ -144,15 +144,33 @@ func main() {
 		fmt.Println("FAIL: RaceTwo faster should win")
 		allPassed = false
 	}
+	// first function faster
+	w2 := RaceTwo(
+		func() string { time.Sleep(5 * time.Millisecond); return "first" },
+		func() string { time.Sleep(100 * time.Millisecond); return "second" },
+	)
+	if w2 != "first" {
+		fmt.Println("FAIL: RaceTwo first faster")
+		allPassed = false
+	}
+	// both instant — either is acceptable
+	w3 := RaceTwo(
+		func() string { return "X" },
+		func() string { return "Y" },
+	)
+	if w3 != "X" && w3 != "Y" {
+		fmt.Println("FAIL: RaceTwo both instant should return one")
+		allPassed = false
+	}
 
-	// WithTimeout success
+	// === WithTimeout tests ===
+	// instant work
 	r, o := WithTimeout(func() int { return 7 }, time.Second)
 	if !o || r != 7 {
 		fmt.Println("FAIL: WithTimeout instant work")
 		allPassed = false
 	}
-
-	// WithTimeout failure
+	// timeout
 	_, o = WithTimeout(func() int {
 		time.Sleep(500 * time.Millisecond)
 		return 0
@@ -161,12 +179,60 @@ func main() {
 		fmt.Println("FAIL: WithTimeout should have timed out")
 		allPassed = false
 	}
+	// zero return value (verify 0 is returned as result, not confused with timeout)
+	r2, o2 := WithTimeout(func() int { return 0 }, time.Second)
+	if !o2 || r2 != 0 {
+		fmt.Println("FAIL: WithTimeout returning 0 should succeed")
+		allPassed = false
+	}
+	// negative return value
+	r3, o3 := WithTimeout(func() int { return -42 }, time.Second)
+	if !o3 || r3 != -42 {
+		fmt.Println("FAIL: WithTimeout negative return")
+		allPassed = false
+	}
 
-	// CollectWithDeadline empty channel closes immediately
+	// === CollectWithDeadline tests ===
+	// closed channel immediately
 	emptyCh := make(chan int)
 	close(emptyCh)
-	if result := CollectWithDeadline(emptyCh, time.Second); len(result) != 0 {
+	if cResult := CollectWithDeadline(emptyCh, time.Second); len(cResult) != 0 {
 		fmt.Println("FAIL: CollectWithDeadline closed channel")
+		allPassed = false
+	}
+	// fast channel closes before deadline
+	fastCh := make(chan int)
+	go func() {
+		fastCh <- 1
+		fastCh <- 2
+		fastCh <- 3
+		close(fastCh)
+	}()
+	fastResult := CollectWithDeadline(fastCh, time.Second)
+	if len(fastResult) != 3 || fastResult[0] != 1 || fastResult[2] != 3 {
+		fmt.Println("FAIL: CollectWithDeadline fast channel")
+		allPassed = false
+	}
+	// deadline fires before channel closes
+	slowCh2 := make(chan int)
+	go func() {
+		for i := 0; i < 100; i++ {
+			slowCh2 <- i
+			time.Sleep(50 * time.Millisecond)
+		}
+	}()
+	deadlineResult := CollectWithDeadline(slowCh2, 120*time.Millisecond)
+	if len(deadlineResult) < 1 || len(deadlineResult) > 5 {
+		fmt.Printf("FAIL: CollectWithDeadline should collect ~2-3, got %d\n", len(deadlineResult))
+		allPassed = false
+	}
+	// single value then close
+	singleCh := make(chan int, 1)
+	singleCh <- 42
+	close(singleCh)
+	singleResult := CollectWithDeadline(singleCh, time.Second)
+	if len(singleResult) != 1 || singleResult[0] != 42 {
+		fmt.Println("FAIL: CollectWithDeadline single value")
 		allPassed = false
 	}
 

@@ -110,7 +110,7 @@ func main() {
 	// Run test cases
 	allPassed := true
 
-	// Generator empty
+	// === Generator tests ===
 	count := 0
 	for range Generator() {
 		count++
@@ -119,16 +119,55 @@ func main() {
 		fmt.Println("FAIL: Generator empty")
 		allPassed = false
 	}
+	// single value
+	genCount := 0
+	genVal := 0
+	for v := range Generator(42) {
+		genVal = v
+		genCount++
+	}
+	if genCount != 1 || genVal != 42 {
+		fmt.Println("FAIL: Generator single value")
+		allPassed = false
+	}
+	// channel closes after all values sent
+	gen2 := Generator(1, 2, 3)
+	collected := []int{}
+	for v := range gen2 {
+		collected = append(collected, v)
+	}
+	if len(collected) != 3 || collected[0] != 1 || collected[2] != 3 {
+		fmt.Println("FAIL: Generator values and order")
+		allPassed = false
+	}
 
-	// Double single value
+	// === Double tests ===
 	d := Double(Generator(5))
 	val, ok := <-d
 	if !ok || val != 10 {
 		fmt.Println("FAIL: Double single value")
 		allPassed = false
 	}
+	// double zero
+	dz := Double(Generator(0))
+	if v := <-dz; v != 0 {
+		fmt.Println("FAIL: Double zero")
+		allPassed = false
+	}
+	// double negative
+	dn := Double(Generator(-3))
+	if v := <-dn; v != -6 {
+		fmt.Println("FAIL: Double negative")
+		allPassed = false
+	}
+	// double empty
+	de := Double(Generator())
+	if _, open := <-de; open {
+		fmt.Println("FAIL: Double empty should close channel")
+		allPassed = false
+	}
 
-	// FilterEven all odd
+	// === FilterEven tests ===
 	count = 0
 	for range FilterEven(Generator(1, 3, 5, 7)) {
 		count++
@@ -137,17 +176,81 @@ func main() {
 		fmt.Println("FAIL: FilterEven all odd")
 		allPassed = false
 	}
+	// all even
+	evenCount := 0
+	for range FilterEven(Generator(2, 4, 6)) {
+		evenCount++
+	}
+	if evenCount != 3 {
+		fmt.Println("FAIL: FilterEven all even")
+		allPassed = false
+	}
+	// zero is even
+	feZero := FilterEven(Generator(0))
+	if v, open := <-feZero; !open || v != 0 {
+		fmt.Println("FAIL: FilterEven zero is even")
+		allPassed = false
+	}
+	// negative evens
+	feNeg := FilterEven(Generator(-2, -3, -4))
+	negEvens := []int{}
+	for v := range feNeg {
+		negEvens = append(negEvens, v)
+	}
+	if len(negEvens) != 2 {
+		fmt.Println("FAIL: FilterEven negative evens")
+		allPassed = false
+	}
+	// empty
+	feEmpty := FilterEven(Generator())
+	if _, open := <-feEmpty; open {
+		fmt.Println("FAIL: FilterEven empty should close")
+		allPassed = false
+	}
 
-	// Sum empty channel
+	// === Sum tests ===
 	if Sum(Generator()) != 0 {
 		fmt.Println("FAIL: Sum empty")
 		allPassed = false
 	}
+	if Sum(Generator(5)) != 5 {
+		fmt.Println("FAIL: Sum single value")
+		allPassed = false
+	}
+	if Sum(Generator(-1, -2, -3)) != -6 {
+		fmt.Println("FAIL: Sum negatives")
+		allPassed = false
+	}
 
-	// Pipeline correctness
+	// === Pipeline correctness ===
 	// 1,2,3 -> double -> 2,4,6 -> filter even -> 2,4,6 -> sum -> 12
 	if Sum(FilterEven(Double(Generator(1, 2, 3)))) != 12 {
 		fmt.Println("FAIL: Pipeline 1,2,3")
+		allPassed = false
+	}
+	// empty pipeline
+	if Sum(FilterEven(Double(Generator()))) != 0 {
+		fmt.Println("FAIL: Pipeline empty")
+		allPassed = false
+	}
+	// single value pipeline: 5 -> double -> 10 -> filter even -> 10 -> sum -> 10
+	if Sum(FilterEven(Double(Generator(5)))) != 10 {
+		fmt.Println("FAIL: Pipeline single value")
+		allPassed = false
+	}
+
+	// === FanOut + FanIn tests ===
+	// verify total sum is preserved after fan-out and fan-in
+	fo2 := Generator(1, 2, 3, 4)
+	outs2 := FanOut(fo2, 2)
+	if len(outs2) != 2 {
+		fmt.Println("FAIL: FanOut should return 2 channels")
+		allPassed = false
+	}
+	merged2 := FanIn(outs2...)
+	total2 := Sum(merged2)
+	if total2 != 10 {
+		fmt.Println("FAIL: FanOut->FanIn sum should be 10")
 		allPassed = false
 	}
 

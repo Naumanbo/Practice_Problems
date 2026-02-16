@@ -107,7 +107,7 @@ func main() {
 	// Run test cases
 	allPassed := true
 
-	// Stack LIFO order
+	// === Stack LIFO order ===
 	ts := &Stack[int]{}
 	ts.Push(1)
 	ts.Push(2)
@@ -125,10 +125,14 @@ func main() {
 		allPassed = false
 	}
 
-	// Empty stack behavior
+	// === Empty stack behavior ===
 	empty := &Stack[int]{}
 	if !empty.IsEmpty() {
 		fmt.Println("FAIL: new stack should be empty")
+		allPassed = false
+	}
+	if empty.Size() != 0 {
+		fmt.Println("FAIL: new stack size should be 0")
 		allPassed = false
 	}
 	if _, ok := empty.Pop(); ok {
@@ -140,7 +144,63 @@ func main() {
 		allPassed = false
 	}
 
-	// Reverse preserves original
+	// === Push then Pop all ===
+	allStack := &Stack[int]{}
+	allStack.Push(10)
+	allStack.Push(20)
+	allStack.Push(30)
+	v1, ok1 := allStack.Pop()
+	v2, ok2 := allStack.Pop()
+	v3, ok3 := allStack.Pop()
+	v4, ok4 := allStack.Pop()
+	if v1 != 30 || !ok1 || v2 != 20 || !ok2 || v3 != 10 || !ok3 {
+		fmt.Println("FAIL: Pop all three")
+		allPassed = false
+	}
+	if ok4 {
+		fmt.Println("FAIL: Pop beyond empty should return false")
+		allPassed = false
+	}
+	_ = v4
+
+	// === Peek doesn't modify ===
+	peekStack := &Stack[int]{}
+	peekStack.Push(99)
+	pv1, _ := peekStack.Peek()
+	pv2, _ := peekStack.Peek()
+	if pv1 != 99 || pv2 != 99 || peekStack.Size() != 1 {
+		fmt.Println("FAIL: Peek should not modify stack")
+		allPassed = false
+	}
+
+	// === IsEmpty after push and pop ===
+	toggleStack := &Stack[int]{}
+	toggleStack.Push(1)
+	if toggleStack.IsEmpty() {
+		fmt.Println("FAIL: stack with element should not be empty")
+		allPassed = false
+	}
+	toggleStack.Pop()
+	if !toggleStack.IsEmpty() {
+		fmt.Println("FAIL: stack after popping all should be empty")
+		allPassed = false
+	}
+
+	// === String stack ===
+	strStack := &Stack[string]{}
+	strStack.Push("a")
+	strStack.Push("b")
+	if sv, _ := strStack.Pop(); sv != "b" {
+		fmt.Println("FAIL: String stack LIFO")
+		allPassed = false
+	}
+	if sv, _ := strStack.Pop(); sv != "a" {
+		fmt.Println("FAIL: String stack second pop")
+		allPassed = false
+	}
+
+	// === Reverse tests ===
+	// preserves original
 	original := []int{1, 2, 3}
 	reversed := Reverse(original)
 	if original[0] != 1 || original[2] != 3 {
@@ -151,11 +211,34 @@ func main() {
 		fmt.Println("FAIL: Reverse result incorrect")
 		allPassed = false
 	}
-
-	// Reverse single element
+	// single element
 	single := Reverse([]int{42})
 	if len(single) != 1 || single[0] != 42 {
 		fmt.Println("FAIL: Reverse single element")
+		allPassed = false
+	}
+	// empty
+	emptyRev := Reverse([]int{})
+	if len(emptyRev) != 0 {
+		fmt.Println("FAIL: Reverse empty")
+		allPassed = false
+	}
+	// two elements
+	two := Reverse([]int{1, 2})
+	if len(two) != 2 || two[0] != 2 || two[1] != 1 {
+		fmt.Println("FAIL: Reverse two elements")
+		allPassed = false
+	}
+	// reverse strings
+	revStr := Reverse([]string{"a", "b", "c"})
+	if revStr[0] != "c" || revStr[1] != "b" || revStr[2] != "a" {
+		fmt.Println("FAIL: Reverse strings")
+		allPassed = false
+	}
+	// palindrome (reverse should equal original values)
+	palindrome := Reverse([]int{1, 2, 1})
+	if palindrome[0] != 1 || palindrome[1] != 2 || palindrome[2] != 1 {
+		fmt.Println("FAIL: Reverse palindrome")
 		allPassed = false
 	}
 

@@ -113,63 +113,155 @@ func main() {
 	// Run test cases
 	allPassed := true
 
-	// Sentinel error tests
+	// === ValidateUser tests ===
+	// sentinel: empty name
 	if ValidateUser("", 25) != ErrEmpty {
 		fmt.Println("FAIL: empty name should return ErrEmpty")
 		allPassed = false
 	}
+	// sentinel: negative age
 	if ValidateUser("Alice", -1) != ErrNegative {
 		fmt.Println("FAIL: negative age should return ErrNegative")
 		allPassed = false
 	}
-
-	// Can use errors.Is with sentinel errors
+	// sentinel: very negative age
+	if ValidateUser("Alice", -100) != ErrNegative {
+		fmt.Println("FAIL: age -100 should return ErrNegative")
+		allPassed = false
+	}
+	// errors.Is works with sentinel errors
 	if !errors.Is(ValidateUser("", 25), ErrEmpty) {
 		fmt.Println("FAIL: errors.Is should work with ErrEmpty")
 		allPassed = false
 	}
-
-	// ValidationError type assertion
+	if !errors.Is(ValidateUser("Bob", -5), ErrNegative) {
+		fmt.Println("FAIL: errors.Is should work with ErrNegative")
+		allPassed = false
+	}
+	// ValidationError for age > 150
 	err := ValidateUser("Alice", 200)
 	if _, ok := err.(ValidationError); !ok {
 		fmt.Println("FAIL: age > 150 should return ValidationError")
 		allPassed = false
 	}
-
-	// Valid user
+	// age exactly 151
+	err = ValidateUser("Alice", 151)
+	if _, ok := err.(ValidationError); !ok {
+		fmt.Println("FAIL: age 151 should return ValidationError")
+		allPassed = false
+	}
+	// boundary: age exactly 150 is valid
+	if ValidateUser("Alice", 150) != nil {
+		fmt.Println("FAIL: age 150 should be valid")
+		allPassed = false
+	}
+	// boundary: age 0 is valid
+	if ValidateUser("Baby", 0) != nil {
+		fmt.Println("FAIL: age 0 should be valid")
+		allPassed = false
+	}
+	// valid user
 	if ValidateUser("Alice", 25) != nil {
 		fmt.Println("FAIL: valid user should return nil")
 		allPassed = false
 	}
+	// priority: empty name AND negative age — ErrEmpty should take priority
+	if ValidateUser("", -5) != ErrEmpty {
+		fmt.Println("FAIL: empty name should take priority over negative age")
+		allPassed = false
+	}
 
-	// Divide by zero
+	// === Error message format tests ===
+	ve2 := ValidationError{Field: "age", Message: "too high"}
+	if ve2.Error() != "validation error on 'age': too high" {
+		fmt.Printf("FAIL: ValidationError format, got %q\n", ve2.Error())
+		allPassed = false
+	}
+	nfe2 := NotFoundError{Resource: "user", ID: "42"}
+	if nfe2.Error() != "user '42' not found" {
+		fmt.Printf("FAIL: NotFoundError format, got %q\n", nfe2.Error())
+		allPassed = false
+	}
+
+	// === Divide tests ===
 	_, err = Divide(5, 0)
 	if err == nil {
 		fmt.Println("FAIL: divide by zero should error")
 		allPassed = false
 	}
-
-	// Divide success
+	// divide zero by zero
+	_, err = Divide(0, 0)
+	if err == nil {
+		fmt.Println("FAIL: 0/0 should error")
+		allPassed = false
+	}
+	// divide success
 	result, err := Divide(10, 4)
 	if err != nil || result != 2.5 {
 		fmt.Println("FAIL: 10/4 should be 2.5")
 		allPassed = false
 	}
+	// divide negative
+	result, err = Divide(-10, 2)
+	if err != nil || result != -5.0 {
+		fmt.Println("FAIL: -10/2 should be -5")
+		allPassed = false
+	}
+	// divide by negative
+	result, err = Divide(10, -2)
+	if err != nil || result != -5.0 {
+		fmt.Println("FAIL: 10/-2 should be -5")
+		allPassed = false
+	}
+	// divide zero by something
+	result, err = Divide(0, 5)
+	if err != nil || result != 0 {
+		fmt.Println("FAIL: 0/5 should be 0")
+		allPassed = false
+	}
+	// error wrapping: Divide error should contain %w
+	_, divErr := Divide(10, 0)
+	if divErr == nil || divErr.Error() == "" {
+		fmt.Println("FAIL: Divide error message should not be empty")
+		allPassed = false
+	}
 
-	// LookupUser success
-	name, err := LookupUser("2")
+	// === LookupUser tests ===
+	// all known users
+	name, err := LookupUser("1")
+	if err != nil || name != "Alice" {
+		fmt.Println("FAIL: LookupUser(1) should return Alice")
+		allPassed = false
+	}
+	name, err = LookupUser("2")
 	if err != nil || name != "Bob" {
 		fmt.Println("FAIL: LookupUser(2) should return Bob")
 		allPassed = false
 	}
-
-	// LookupUser not found - type assertion
+	name, err = LookupUser("3")
+	if err != nil || name != "Charlie" {
+		fmt.Println("FAIL: LookupUser(3) should return Charlie")
+		allPassed = false
+	}
+	// not found - type assertion
 	_, err = LookupUser("999")
 	if nfErr, ok := err.(NotFoundError); !ok {
 		fmt.Println("FAIL: unknown user should return NotFoundError")
 		allPassed = false
 	} else if nfErr.Resource != "user" || nfErr.ID != "999" {
 		fmt.Println("FAIL: NotFoundError fields incorrect")
+		allPassed = false
+	}
+	// not found - empty ID
+	_, err = LookupUser("")
+	if _, ok := err.(NotFoundError); !ok {
+		fmt.Println("FAIL: empty ID should return NotFoundError")
+		allPassed = false
+	}
+	// not found - ID "0"
+	_, err = LookupUser("0")
+	if _, ok := err.(NotFoundError); !ok {
+		fmt.Println("FAIL: ID 0 should return NotFoundError")
 		allPassed = false
 	}
 
