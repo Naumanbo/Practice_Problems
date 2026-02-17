@@ -1,3 +1,21 @@
+// Key Takeaways:
+// 1. Go has three layers of errors: sentinel errors (errors.New), custom error types
+//    (structs implementing Error() string), and wrapped errors (fmt.Errorf with %w).
+//    Use sentinels for simple fixed conditions, custom types when errors carry context,
+//    and wrapping to add context while preserving the original error.
+//
+// 2. Sentinel errors are compared with == or errors.Is(). Custom error types are
+//    checked with type assertions err.(MyError) or errors.As(). The error interface
+//    only requires one method: Error() string.
+//
+// 3. Validation order matters — when multiple checks can fail, validate in priority
+//    order so the most important error is returned first (e.g., empty name before
+//    invalid age).
+//
+// 4. fmt.Errorf("context: %w", err) wraps an error, preserving it for errors.Is()
+//    unwrapping. This is different from %v which formats it as a string and loses
+//    the original error identity. Always use %w when callers need to inspect the cause.
+
 package main
 
 import (
@@ -28,6 +46,71 @@ import (
 // then implement one function at a time.
 
 // === WRITE YOUR CODE BELOW ===
+var ErrEmpty = errors.New("empty")
+var ErrNegative = errors.New("negative")
+var ErrDivideByZero = errors.New("divide by zero")
+
+type ValidationError struct {
+	Field   string
+	Message string
+}
+
+type NotFoundError struct {
+	Resource string
+	ID       string
+}
+
+func (ve ValidationError) Error() string {
+
+	return fmt.Sprintf("validation error on '%s': %s", ve.Field, ve.Message)
+
+}
+
+func (nfe NotFoundError) Error() string {
+
+	return fmt.Sprintf("%s '%s' not found", nfe.Resource, nfe.ID)
+}
+
+func ValidateUser(name string, age int) error {
+
+	if name == "" {
+		return ErrEmpty
+	}
+
+	if age < 0 {
+		return ErrNegative
+	}
+
+	if age >= 151 {
+		return ValidationError{Field: "age", Message: "too high"}
+	}
+	return nil
+}
+
+func Divide(a, b int) (float64, error) {
+	if b == 0 {
+		return 0, fmt.Errorf("cannot divide by zero: %w", ErrDivideByZero) // wrapping error using %w
+	} else {
+		return float64(a) / float64(b), nil
+	}
+
+}
+
+func LookupUser(id string) (string, error) {
+
+	switch id {
+	case "1":
+		return "Alice", nil
+	case "2":
+		return "Bob", nil
+	case "3":
+		return "Charlie", nil
+	}
+	// if id not 1,2, or 3, return an error
+	nfe := NotFoundError{Resource: "user", ID: id}
+	return "", nfe
+
+}
 
 // === END YOUR CODE ===
 
