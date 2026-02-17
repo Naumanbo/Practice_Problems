@@ -6,51 +6,30 @@ import (
 	"sync"
 )
 
-// Tests: Goroutines, channels, sending/receiving, basic concurrency
+// Exercise: Goroutines & Channels
 //
-// 1. Implement Squarer(nums []int) []int
-//    - Launch a goroutine that sends each number squared into a channel
-//    - Main function receives from the channel and collects results
-//    - Return the squared values (order doesn't need to match input)
+// Build concurrent functions from scratch using goroutines and channels.
 //
-// 2. Implement ParallelSum(slices [][]int) int
-//    - Split work: each slice gets its own goroutine to compute its sum
-//    - Each goroutine sends its partial sum to a shared channel
-//    - Collect and return the total sum
+// What to build:
+// - Squarer: square each number using a goroutine + channel, collect results
+// - ParallelSum: split work across goroutines, each computes a partial sum
+// - IsPrimeParallel: check primality of multiple numbers concurrently
+// - Merge: combine two input channels into one output channel
 //
-// 3. Implement IsPrimeParallel(nums []int) map[int]bool
-//    - Check each number for primality in its own goroutine
-//    - Use a channel to send back results as (number, isPrime) pairs
-//    - Return a map of number -> isPrime
-//    - Hint: define a small result struct to send through the channel
+// You'll need to decide:
+// - What structs/types to define (if any)
+// - Whether to use buffered or unbuffered channels
+// - How to coordinate goroutine completion (WaitGroup, counting, etc.)
+// - How to properly close channels to avoid deadlocks
 //
-// 4. Implement Merge(ch1, ch2 <-chan int) <-chan int
-//    - Merge two input channels into one output channel
-//    - Use a goroutine + sync.WaitGroup to read from both and forward
-//    - Close the output channel when both inputs are exhausted
+// Read the tests in main() to understand exact function signatures
+// and expected behavior. The isPrime helper is provided.
 
-// TODO: Implement Squarer
-func Squarer(nums []int) []int {
-	return nil
-}
+// === WRITE YOUR CODE BELOW ===
 
-// TODO: Implement ParallelSum
-func ParallelSum(slices [][]int) int {
-	return 0
-}
+// === END YOUR CODE ===
 
-// Hint: use this struct for IsPrimeParallel results
-// type primeResult struct {
-// 	num     int
-// 	isPrime bool
-// }
-
-// TODO: Implement IsPrimeParallel
-func IsPrimeParallel(nums []int) map[int]bool {
-	return nil
-}
-
-// isPrime checks if a number is prime (helper - already done for you)
+// isPrime checks if a number is prime (helper — DO NOT MODIFY)
 func isPrime(n int) bool {
 	if n < 2 {
 		return false
@@ -61,11 +40,6 @@ func isPrime(n int) bool {
 		}
 	}
 	return true
-}
-
-// TODO: Implement Merge
-func Merge(ch1, ch2 <-chan int) <-chan int {
-	return nil
 }
 
 func main() {

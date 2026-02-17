@@ -5,72 +5,31 @@ import (
 	"fmt"
 )
 
-// Tests: Error interface, custom error types, error wrapping, sentinel errors
+// Exercise: Custom Error Types & Error Handling
 //
-// The error interface is: type error interface { Error() string }
+// Build a complete error handling system from scratch.
 //
-// 1. Create a ValidationError type with fields:
-//    - Field string (which field failed)
-//    - Message string (what went wrong)
-//    Error() should return: "validation error on 'Field': Message"
+// What to build:
+// - Two sentinel errors (package-level variables)
+// - Two custom error types that satisfy the error interface
+// - Three functions that return different kinds of errors
 //
-// 2. Create a NotFoundError type with fields:
-//    - Resource string (e.g., "user", "file")
-//    - ID string (the identifier that wasn't found)
-//    Error() should return: "Resource 'ID' not found"
+// Requirements:
+// - A ValidationError type (stores field name and message)
+// - A NotFoundError type (stores resource type and ID)
+// - A ValidateUser function (validates name and age)
+// - A Divide function (handles division by zero with error wrapping using %w)
+// - A LookupUser function (hardcoded user database: "1"->Alice, "2"->Bob, "3"->Charlie)
 //
-// 3. Create sentinel errors (package-level var):
-//    - ErrEmpty = errors.New("empty input")
-//    - ErrNegative = errors.New("negative number not allowed")
+// Read the tests in main() to understand exact function signatures,
+// error message formats, and expected behavior.
 //
-// 4. Implement ValidateUser(name string, age int) error
-//    - Return ErrEmpty if name is empty
-//    - Return ErrNegative if age < 0
-//    - Return ValidationError if age > 150
-//    - Return nil if valid
-//
-// 5. Implement Divide(a, b float64) (float64, error)
-//    - Return error if b is 0
-//    - Wrap the error with context: fmt.Errorf("divide %v by %v: %w", a, b, err)
-//
-// 6. Implement LookupUser(id string) (string, error)
-//    - Known IDs: "1" -> "Alice", "2" -> "Bob", "3" -> "Charlie"
-//    - Return NotFoundError for unknown IDs
+// Tip: Start by creating minimal stubs so the file compiles,
+// then implement one function at a time.
 
-// TODO: Define sentinel errors
-var ErrEmpty = errors.New("empty input")
-var ErrNegative = errors.New("negative number not allowed")
+// === WRITE YOUR CODE BELOW ===
 
-// TODO: Implement Error() for ValidationError
-type ValidationError struct {
-	Field   string
-	Message string
-}
-
-func (v ValidationError) Error() string { return "" } // TODO: implement
-
-// TODO: Implement Error() for NotFoundError
-type NotFoundError struct {
-	Resource string
-	ID       string
-}
-
-func (n NotFoundError) Error() string { return "" } // TODO: implement
-
-// TODO: Implement ValidateUser
-func ValidateUser(name string, age int) error {
-	return nil
-}
-
-// TODO: Implement Divide
-func Divide(a, b float64) (float64, error) {
-	return 0, nil
-}
-
-// TODO: Implement LookupUser
-func LookupUser(id string) (string, error) {
-	return "", nil
-}
+// === END YOUR CODE ===
 
 func main() {
 	// Test ValidationError

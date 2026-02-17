@@ -2,43 +2,23 @@ package main
 
 import "fmt"
 
-// Tests: Generic functions, type parameters, comparable constraint
+// Exercise: Generic Utility Functions
 //
-// 1. Implement Filter[T any](slice []T, predicate func(T) bool) []T
-//    - Returns a new slice containing only elements where predicate returns true
-//    - Should work with any type
+// Build a set of generic functions from scratch. No types or
+// function signatures are provided — design them yourself.
 //
-// 2. Implement Contains[T comparable](slice []T, target T) bool
-//    - Returns true if target exists in the slice
-//    - T must be comparable (supports ==)
+// What to build:
+// - Filter: keep elements matching a predicate (works with any type)
+// - Contains: check if a target exists in a slice (needs comparable types)
+// - Map: transform each element (input and output types can differ)
+// - Reduce: collapse a slice into a single value using an accumulator
 //
-// 3. Implement Map[T any, U any](slice []T, transform func(T) U) []U
-//    - Applies transform to each element and returns the results
-//    - Input and output types can differ
-//
-// 4. Implement Reduce[T any, U any](slice []T, initial U, fn func(U, T) U) U
-//    - Reduces a slice to a single value using fn
-//    - Starts with initial, applies fn(accumulator, element) for each element
+// Read the tests in main() to understand exact function names,
+// type parameter constraints, and expected behavior.
 
-// TODO: Implement Filter
-func Filter[T any](slice []T, predicate func(T) bool) []T {
-	return nil
-}
+// === WRITE YOUR CODE BELOW ===
 
-// TODO: Implement Contains
-func Contains[T comparable](slice []T, target T) bool {
-	return false
-}
-
-// TODO: Implement Map
-func Map[T any, U any](slice []T, transform func(T) U) []U {
-	return nil
-}
-
-// TODO: Implement Reduce
-func Reduce[T any, U any](slice []T, initial U, fn func(U, T) U) U {
-	return initial
-}
+// === END YOUR CODE ===
 
 func main() {
 	// Test Filter

@@ -6,71 +6,28 @@ import (
 	"unicode"
 )
 
-// Tests: io.Reader interface, reader chaining/wrapping, byte transformation
+// Exercise: io.Reader Wrappers & Stream Transformation
 //
-// Create reader wrappers that transform data as it passes through.
-// Each reader wraps another io.Reader and modifies the stream.
+// Build reader types that wrap other readers and transform data as it flows through.
+// Each reader must satisfy the io.Reader interface: Read(p []byte) (int, error)
 //
-// 1. UpperReader - converts all lowercase letters to uppercase
-//    - Only affects a-z, leaves everything else unchanged
+// What to build:
+// - UpperReader: wraps a reader, converts lowercase letters to uppercase
+// - FilterReader: wraps a reader, removes bytes matching a predicate function
+// - LimitReader: wraps a reader, reads at most N bytes then returns io.EOF
+// - ChainReader: reads from multiple readers sequentially (like io.MultiReader)
 //
-// 2. FilterReader - removes all characters matching a predicate
-//    - Takes an io.Reader and a func(byte) bool
-//    - If predicate returns true, the byte is removed from output
+// Key concept: Read() fills the provided byte slice with data and returns
+// (bytesRead, error). Return io.EOF when no more data is available.
 //
-// 3. LimitReader - reads at most N bytes total
-//    - After N bytes, returns io.EOF
-//    - Hint: track how many bytes have been read
-//
-// 4. ChainReader - chains multiple readers together
-//    - When first reader returns EOF, continue with next
-//    - Like io.MultiReader but implement it yourself
-//
-// Bonus understanding:
-// - Read() fills the provided buffer with data
-// - Returns (n, err) where n is bytes written to buffer
-// - Return io.EOF when no more data
+// Read the tests in main() to understand exact type names, field names,
+// and expected behavior. The readAll helper function is provided for testing.
 
-// TODO: Implement UpperReader
-type UpperReader struct {
-	r io.Reader
-}
+// === WRITE YOUR CODE BELOW ===
 
-func (u *UpperReader) Read(p []byte) (int, error) {
-	return 0, io.EOF
-}
+// === END YOUR CODE ===
 
-// TODO: Implement FilterReader
-type FilterReader struct {
-	r         io.Reader
-	predicate func(byte) bool
-}
-
-func (f *FilterReader) Read(p []byte) (int, error) {
-	return 0, io.EOF
-}
-
-// TODO: Implement LimitReader
-type LimitReader struct {
-	r io.Reader
-	n int // bytes remaining
-}
-
-func (l *LimitReader) Read(p []byte) (int, error) {
-	return 0, io.EOF
-}
-
-// TODO: Implement ChainReader
-type ChainReader struct {
-	readers []io.Reader
-	current int
-}
-
-func (c *ChainReader) Read(p []byte) (int, error) {
-	return 0, io.EOF
-}
-
-// Helper function to read all bytes from a reader
+// readAll is a test helper — reads all bytes from a reader (DO NOT MODIFY)
 func readAll(r io.Reader) string {
 	var result []byte
 	buf := make([]byte, 8)

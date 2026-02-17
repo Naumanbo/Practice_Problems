@@ -4,59 +4,24 @@ import (
 	"fmt"
 )
 
-// Tests: Generic types, methods on generic structs, pointer receivers
+// Exercise: Generic Stack Data Structure
 //
-// Implement a generic Stack data structure.
+// Build a complete generic Stack from scratch.
 //
-// 1. Define Stack[T any] struct
-//    - Use a slice internally to store elements
+// What to build:
+// - A generic Stack type that works with any element type
+// - Methods: Push, Pop, Peek, Size, IsEmpty (all pointer receivers)
+// - A standalone Reverse function that uses a Stack internally to reverse a slice
 //
-// 2. Implement these methods (all pointer receivers):
-//    - Push(val T)          - add element to top
-//    - Pop() (T, bool)      - remove and return top element; bool = false if empty
-//    - Peek() (T, bool)     - return top element without removing; bool = false if empty
-//    - Size() int           - return number of elements
-//    - IsEmpty() bool       - return true if stack has no elements
+// Pop and Peek should return (value, bool) where bool indicates success.
+// Popping/peeking an empty stack should return (zero value, false).
 //
-// 3. Implement a standalone function:
-//    - Reverse[T any](slice []T) []T
-//    - Uses a Stack internally to reverse a slice
+// Read the tests in main() to understand exact method signatures
+// and expected LIFO behavior.
 
-// TODO: Add a field to hold elements (hint: use a slice of T)
-type Stack[T any] struct {
-	elements []T
-}
+// === WRITE YOUR CODE BELOW ===
 
-// TODO: Implement Push
-func (s *Stack[T]) Push(val T) {
-}
-
-// TODO: Implement Pop
-func (s *Stack[T]) Pop() (T, bool) {
-	var zero T
-	return zero, false
-}
-
-// TODO: Implement Peek
-func (s *Stack[T]) Peek() (T, bool) {
-	var zero T
-	return zero, false
-}
-
-// TODO: Implement Size
-func (s *Stack[T]) Size() int {
-	return 0
-}
-
-// TODO: Implement IsEmpty
-func (s *Stack[T]) IsEmpty() bool {
-	return true
-}
-
-// TODO: Implement Reverse using a Stack
-func Reverse[T any](slice []T) []T {
-	return nil
-}
+// === END YOUR CODE ===
 
 func main() {
 	// Test int stack

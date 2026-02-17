@@ -2,65 +2,32 @@ package main
 
 import "fmt"
 
-// Tests: Channel pipelines, range over channels, close(), producer-consumer pattern
+// Exercise: Channel Pipelines
 //
 // Build a data processing pipeline where each stage is a goroutine
-// connected by channels.
+// connected by channels. Design all functions from scratch.
 //
-// Pipeline: Generator -> Double -> Filter (keep evens) -> Collect results
+// Pipeline stages to build:
+// - Generator: takes variadic ints, returns a receive-only channel that emits them
+// - Double: reads from input channel, doubles each value, sends to output channel
+// - FilterEven: reads from input channel, only forwards even numbers
+// - Sum: reads all values from a channel and returns their total
 //
-// 1. Implement Generator(nums ...int) <-chan int
-//    - Returns a receive-only channel
-//    - Sends each number into the channel, then closes it
+// Advanced (fan-out/fan-in):
+// - FanOut: distribute values from one channel across N output channels (round-robin)
+// - FanIn: merge multiple channels into one output channel
 //
-// 2. Implement Double(in <-chan int) <-chan int
-//    - Reads from in, doubles each value, sends to output channel
-//    - Closes output when input is exhausted
+// Critical rules:
+// - Every function that returns a channel must close it when done
+// - Use goroutines inside each function so they don't block
+// - Stages compose: Sum(FilterEven(Double(Generator(1,2,3))))
 //
-// 3. Implement FilterEven(in <-chan int) <-chan int
-//    - Reads from in, only forwards even numbers
-//    - Closes output when input is exhausted
-//
-// 4. Implement Sum(in <-chan int) int
-//    - Reads all values from channel and returns their sum
-//
-// 5. Implement FanOut(in <-chan int, n int) []<-chan int
-//    - Distribute values from in across n output channels (round-robin)
-//    - Close all output channels when input is exhausted
-//
-// 6. Implement FanIn(channels ...<-chan int) <-chan int
-//    - Merge multiple channels into one output channel
-//    - Close output when ALL inputs are exhausted
+// Read the tests in main() to understand exact function signatures
+// and expected behavior.
 
-// TODO: Implement Generator
-func Generator(nums ...int) <-chan int {
-	return nil
-}
+// === WRITE YOUR CODE BELOW ===
 
-// TODO: Implement Double
-func Double(in <-chan int) <-chan int {
-	return nil
-}
-
-// TODO: Implement FilterEven
-func FilterEven(in <-chan int) <-chan int {
-	return nil
-}
-
-// TODO: Implement Sum
-func Sum(in <-chan int) int {
-	return 0
-}
-
-// TODO: Implement FanOut
-func FanOut(in <-chan int, n int) []<-chan int {
-	return nil
-}
-
-// TODO: Implement FanIn
-func FanIn(channels ...<-chan int) <-chan int {
-	return nil
-}
+// === END YOUR CODE ===
 
 func main() {
 	// Test individual stages

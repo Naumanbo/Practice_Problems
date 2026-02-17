@@ -5,50 +5,28 @@ import (
 	"time"
 )
 
-// Tests: Select statement, timeouts, non-blocking channel operations, tickers
+// Exercise: Select, Timeouts & Non-Blocking Channel Ops
 //
-// 1. Implement RaceTwo(a, b func() string) string
-//    - Run both functions in separate goroutines
-//    - Each goroutine sends its result to a channel
-//    - Use select to return whichever finishes first
+// Build concurrency patterns using Go's select statement.
+// Design all types and functions from scratch.
 //
-// 2. Implement WithTimeout(work func() int, timeout time.Duration) (int, bool)
-//    - Run work in a goroutine
-//    - If work finishes before timeout, return (result, true)
-//    - If timeout fires first, return (0, false)
-//    - Hint: use time.After(timeout)
+// What to build:
+// - RaceTwo: run two functions concurrently, return whichever finishes first
+// - WithTimeout: run work in a goroutine, return result or timeout
+// - Heartbeat: emit "beat" at regular intervals until a done signal
+// - CollectWithDeadline: collect values from a channel until it closes or deadline expires
 //
-// 3. Implement Heartbeat(interval time.Duration, done <-chan struct{}) <-chan string
-//    - Returns a channel that emits "beat" at regular intervals
-//    - Stops when done channel is closed
-//    - Use time.NewTicker for the interval
-//    - Remember to stop the ticker when done
+// Key tools:
+// - select {} for multiplexing channels
+// - time.After(duration) returns a channel that fires once after duration
+// - time.NewTicker(duration) for repeated signals (remember to Stop() it)
 //
-// 4. Implement CollectWithDeadline(ch <-chan int, deadline time.Duration) []int
-//    - Collect values from ch until either:
-//      a) The channel is closed, OR
-//      b) The deadline expires
-//    - Return whatever was collected
+// Read the tests in main() to understand exact function signatures
+// and expected behavior.
 
-// TODO: Implement RaceTwo
-func RaceTwo(a, b func() string) string {
-	return ""
-}
+// === WRITE YOUR CODE BELOW ===
 
-// TODO: Implement WithTimeout
-func WithTimeout(work func() int, timeout time.Duration) (int, bool) {
-	return 0, false
-}
-
-// TODO: Implement Heartbeat
-func Heartbeat(interval time.Duration, done <-chan struct{}) <-chan string {
-	return nil
-}
-
-// TODO: Implement CollectWithDeadline
-func CollectWithDeadline(ch <-chan int, deadline time.Duration) []int {
-	return nil
-}
+// === END YOUR CODE ===
 
 func main() {
 	// Test RaceTwo
