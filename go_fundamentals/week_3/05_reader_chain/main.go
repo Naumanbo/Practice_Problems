@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"strings"
 	"unicode"
@@ -24,6 +25,37 @@ import (
 // and expected behavior. The readAll helper function is provided for testing.
 
 // === WRITE YOUR CODE BELOW ===
+type UpperReader struct {
+}
+
+type FilterReader struct {
+}
+
+type LimitReader struct {
+}
+
+type ChainReader struct {
+}
+
+func (ur UpperReader) Read(b []byte) (int, error) {
+
+	return 0, fmt.Errorf("err")
+}
+
+func (fr FilterReader) Read(b []byte) (int, error) {
+
+	return 0, fmt.Errorf("err")
+}
+
+func (lr LimitReader) Read(b []byte) (int, error) {
+
+	return 0, fmt.Errorf("err")
+}
+
+func (cr ChainReader) Read(b []byte) (int, error) {
+
+	return 0, fmt.Errorf("err")
+}
 
 // === END YOUR CODE ===
 
