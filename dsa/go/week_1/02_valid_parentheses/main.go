@@ -29,6 +29,26 @@ import (
 // Hint: Use a slice as a stack
 func IsValid(s string) bool {
 	// Your implementation
+	stack := make([]rune, 0)
+	matching := make(map[rune]rune, 0)
+	matching['('] = ')'
+	matching['['] = ']'
+	matching['{'] = '}'
+
+	for _, c := range s {
+		if c == '(' || c == '{' || c == '[' {
+			stack = append(stack, c)
+		} else {
+			if len(stack) > 0 && c == matching[stack[len(stack)-1]] {
+				stack = stack[:len(stack)-1]
+			} else {
+				return false
+			}
+		}
+	}
+	if len(stack) == 0 {
+		return true
+	}
 	return false
 }
 
