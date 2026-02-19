@@ -1,3 +1,19 @@
+# Key Takeaways:
+# 1. Recursive template: (1) base case, (2) recurse on smaller input,
+#    (3) combine result. Never recurse on the same input — something must shrink.
+#
+# 2. For recursive linked list reversal: trust the recursion reversed the rest,
+#    then use head.next.next = head to flip the back-pointer, and head.next = None
+#    to cut the forward link and avoid a cycle.
+#
+# 3. Iterative reversal uses three pointers (prev, current, next) and is O(1) space.
+#    Recursive reversal is O(n) space due to the call stack — one frame per node.
+#
+# 4. Common recursion bugs: no base case (stack overflow), recursing on the same
+#    input (infinite loop), or ignoring the return value (result lost, returns None).
+#
+# Complexity: Time O(n), Space O(1) iterative / O(n) recursive
+
 """
 DSA Problem 3: Reverse Linked List
 
@@ -51,12 +67,19 @@ def reverse_recursive(head: Optional[ListNode]) -> Optional[ListNode]:
     """
     Recursive approach.
 
-    Time: O(?)
-    Space: O(?) - consider call stack
+    Time: O(n)
+    Space: O(n) - consider call stack
 
     Your implementation:
     """
-    pass
+    # base case
+    if head is None or head.next is None:
+        return head
+    
+    new_head = reverse_recursive(head.next)
+    head.next.next = head
+    head.next = None
+    return new_head
 
 
 # =============================================================================
@@ -142,5 +165,32 @@ if __name__ == "__main__":
     print("=" * 70)
     print("\nQuestions:")
     print("1. Draw pointer changes for [1,2,3] step by step (iterative).")
+    print("A: ")
     print("2. What's the space complexity difference between approaches?")
+    print("A: iterative is O(1) while recursive is O(n) since each new call of itself creates a function call in the call stack until the base case is reached.")
     print("3. Why prefer iterative in production code?")
+    print("A: Initial:")
+    print("   prev=None  curr=1  next=?")
+    print("   1 → 2 → 3 → None")
+    print("")
+    print("   Step 1 (curr=1):")
+    print("     next = 2")
+    print("     1.next = None  (point back to prev)")
+    print("     prev = 1, curr = 2")
+    print("     None ← 1    2 → 3 → None")
+    print("")
+    print("   Step 2 (curr=2):")
+    print("     next = 3")
+    print("     2.next = 1  (point back to prev)")
+    print("     prev = 2, curr = 3")
+    print("     None ← 1 ← 2    3 → None")
+    print("")
+    print("   Step 3 (curr=3):")
+    print("     next = None")
+    print("     3.next = 2  (point back to prev)")
+    print("     prev = 3, curr = None")
+    print("     None ← 1 ← 2 ← 3")
+    print("")
+    print("   curr=None, exit loop. Return prev=3.")
+    print("3. Follow-up: How would you find WHERE the cycle begins? (LeetCode #142)")
+    print("A: Because the call stack balloons in size with a recursive approach using exponential memory")
