@@ -1,3 +1,15 @@
+// Key Takeaways:
+// 1. Use a stack for bracket matching because nesting is LIFO — the most recently
+//    opened bracket must be the first one closed. std::stack gives O(1) push/pop/top.
+//
+// 2. In C++, std::stack wraps a deque by default. Use push(), pop(), top(), and
+//    empty() — unlike Python/Go where you manage the stack manually with a list/slice.
+//
+// 3. Odd-length strings can be rejected immediately in O(1) — every valid pair
+//    contributes exactly 2 characters, so any odd-length string must be invalid.
+//
+// Complexity: Time O(n), Space O(n) worst case (all openers, e.g. "((((")
+
 /*
 DSA Problem 2: Valid Parentheses
 

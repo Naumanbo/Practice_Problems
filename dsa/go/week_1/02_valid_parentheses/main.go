@@ -1,3 +1,17 @@
+// Key Takeaways:
+// 1. Use a stack for bracket matching because nesting is LIFO — the most recently
+//    opened bracket must be the first one closed. A stack gives O(1) access to
+//    the most recent opener.
+//
+// 2. In Go, use a slice as a stack: append() to push, slice[:len(stack)-1] to pop.
+//    A common bug: using len(s) (the input string length) instead of len(stack)
+//    when popping — always slice relative to the stack's own length.
+//
+// 3. Odd-length strings can be rejected immediately in O(1) — every valid pair
+//    contributes exactly 2 characters, so any odd-length string must be invalid.
+//
+// Complexity: Time O(n), Space O(n) worst case (all openers, e.g. "((((")
+
 package main
 
 /*
