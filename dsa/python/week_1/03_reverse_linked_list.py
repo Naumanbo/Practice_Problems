@@ -17,7 +17,7 @@
 """
 DSA Problem 3: Reverse Linked List
 
-Tests: Linked list traversal, pointer manipulation, iterative vs recursive
+Tests: Linked list traversal, pointer manipulation, iterative vs recursive 
 
 Difficulty: Easy
 Source: LeetCode #206
