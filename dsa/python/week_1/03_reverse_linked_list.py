@@ -23,11 +23,27 @@ def reverse_iterative(head: Optional[ListNode]) -> Optional[ListNode]:
     """
     Iterative approach using three pointers.
 
-    Time: O(?)
-    Space: O(?)
+    Time: O(n)
+    Space: O(1)
 
     Your implementation:
+    use prev, current, and next pointers to reverse list
     """
+    if not head:
+        return None
+    
+    prev = None
+    current = head
+    next = None
+
+    while current:
+        next = current.next
+        current.next = prev
+        prev = current
+        current = next
+
+    return prev
+
     pass
 
 
