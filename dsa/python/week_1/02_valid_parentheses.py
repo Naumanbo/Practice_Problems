@@ -1,3 +1,16 @@
+# Key Takeaways:
+# 1. Use a stack for bracket matching because nesting is LIFO — the most recently
+#    opened bracket must be the first one closed. A stack gives O(1) access to
+#    the most recent opener.
+#
+# 2. Odd-length strings can be rejected immediately in O(1) — every valid pair
+#    contributes exactly 2 characters, so any odd-length string must have an unmatched bracket.
+#
+# 3. Map closers to openers (or openers to closers) to check matches in O(1).
+#    After the loop, an empty stack means all openers were matched.
+#
+# Complexity: Time O(n), Space O(n) worst case (all openers, e.g. "((((")
+
 """
 DSA Problem 2: Valid Parentheses
 
@@ -19,14 +32,38 @@ Valid if:
 
 def is_valid(s: str) -> bool:
     """
-    Time: O(?)
-    Space: O(?)
+    Time: O(n)
+    Space: O(n)
 
     Hint: Use a stack. Push opening brackets, pop and match for closing.
 
     Your implementation:
+    push openers; on closer, verify it matches the most recent opener
+
     """
-    pass
+    mapping = {"{": "}", # create a mapping of what closing brackets each opening bracket corresponds with.
+               "(": ")",
+               "[": "]"}
+    if len(s) % 2 == 1: # simple arithmetic check, if length is odd, there is an unclosed parenthesis.
+        return False
+    if len(s) == 0: # Empty case
+        return True
+    
+    opening = [] # create stack
+    for c in s: 
+        if c == "(" or c == "{" or c == "[": # populate opening stack with opening brackets
+            opening.append(c)
+        else:
+            if len(opening) > 0 and c == mapping[opening[-1]]: # can only check opening[-1] if length is 0. valid closing if closing bracket matches mapping of open bracket
+                opening.pop() # pop if found matching, last opened parenthesis should be the first one closed.
+            else:
+                return False # Not matching 
+
+
+    if len(opening) == 0: # All are matching
+        return True
+    
+    return False
 
 
 # =============================================================================
@@ -100,5 +137,10 @@ if __name__ == "__main__":
     print("=" * 70)
     print("\nQuestions:")
     print("1. Why is a stack the right data structure for this problem?")
+    print("A: Because it reinforces that the last opened bracket should be the first one closed. ")
     print("2. What's the time/space complexity?")
+    print("A: Time complexity is O(n) because the algorithm iterates through each character in the string once. \n" \
+    "Space complexity is O(n) as well because worst case scenario for the maximum size of the opening set is len(s) since each element can be an opening bracket.")
     print("3. Could you solve this without a stack? What's the tradeoff?")
+    print("A: This could be solved without a stack by using ")
+
