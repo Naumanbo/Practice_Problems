@@ -23,14 +23,38 @@ Run: ./02_valid_parentheses
 #include <string>
 #include <stack>
 #include <vector>
+#include <map>
 
 using namespace std;
 
-// Time: O(?)
-// Space: O(?)
+// Time: O(n)
+// Space: O(n)
 // Hint: Use std::stack
 bool isValid(const string& s) {
     // Your implementation
+    map<char, char> closers;
+    closers['{'] = '}';
+    closers['('] = ')';
+    closers['['] = ']';
+
+    stack<char> openers;
+    for (char c : s) {
+        if (c == '{' || c == '[' || c == '(') {
+            openers.push(c);
+        }
+        else {
+            if (!openers.empty() && c == closers[openers.top()]) {
+                openers.pop();
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    if (openers.empty()) {
+        return true;
+    }
     return false;
 }
 
