@@ -51,7 +51,7 @@ class ListNode:
 
 
 def merge_two_lists(list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
-    # TODO: Implement solution
+    # DONE: Implement solution
     # Hint: Use a dummy head node to simplify edge cases
     # use two pointers
 
