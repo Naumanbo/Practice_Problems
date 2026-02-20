@@ -1,3 +1,18 @@
+# Key Takeaways:
+# 1. Classic single-pass greedy: track the minimum price seen so far, and at each
+#    step compute the profit if you sold today. No need to look ahead.
+#
+# 2. Use `sys.maxsize` or `float('inf')` to initialize a minimum tracker.
+#    `float('inf')` is idiomatic for DSA — works in comparisons with ints directly.
+#
+# 3. The `elif` is key — you can't sell on the same day you update the minimum,
+#    so the two cases (new min vs. new profit) are mutually exclusive.
+#
+# 4. Return 0 if no profit is possible — initialize max_profit to 0 so unprofitable
+#    cases naturally return 0 without extra checks.
+#
+# Complexity: Time O(n), Space O(1)
+
 """
 Best Time to Buy and Sell Stock (LeetCode 121)
 
@@ -23,14 +38,21 @@ Constraints:
     - 1 <= prices.length <= 10^5
     - 0 <= prices[i] <= 10^4
 """
-
+import sys
 from typing import List
 
 
 def max_profit(prices: List[int]) -> int:
     # TODO: Implement solution
     # Hint: Track the minimum price seen so far and the maximum profit
-    pass
+    maximum_profit = 0
+    min_price = sys.maxsize
+    for price in prices:
+        if price < min_price:
+            min_price = price
+        elif price - min_price > maximum_profit:
+            maximum_profit = price - min_price
+    return maximum_profit
 
 
 # Tests

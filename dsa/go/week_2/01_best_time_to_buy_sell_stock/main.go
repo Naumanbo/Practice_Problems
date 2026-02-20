@@ -1,6 +1,21 @@
+// Key Takeaways:
+// 1. Classic single-pass greedy: track the minimum price seen so far, and at each
+//    step compute the profit if you sold today. No need to look ahead.
+//
+// 2. In Go, use `math.MaxInt` (from "math" package) to initialize a minimum tracker.
+//    Equivalent to sys.maxsize in Python or INT_MAX in C++.
+//
+// 3. Initialize max_profit to 0 so unprofitable cases naturally return 0
+//    without extra checks — the zero value works in your favor here.
+//
+// Complexity: Time O(n), Space O(1)
+
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // Tests: Arrays, single pass, tracking minimum
 //
@@ -12,7 +27,17 @@ import "fmt"
 func maxProfit(prices []int) int {
 	// TODO: Implement solution
 	// Hint: Track minimum price seen so far and maximum profit
-	return 0
+	minimum_price := math.MaxInt
+	maximum_profit := 0
+
+	for _, price := range prices {
+		if price < minimum_price {
+			minimum_price = price
+		} else if price-minimum_price > maximum_profit {
+			maximum_profit = price - minimum_price
+		}
+	}
+	return maximum_profit
 }
 
 func main() {

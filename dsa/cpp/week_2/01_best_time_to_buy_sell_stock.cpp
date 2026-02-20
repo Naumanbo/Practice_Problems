@@ -1,3 +1,18 @@
+// Key Takeaways:
+// 1. Classic single-pass greedy: track the minimum price seen so far, and at each
+//    step compute the profit if you sold today. No need to look ahead.
+//
+// 2. Use INT_MAX from <climits> to initialize a minimum tracker in C++.
+//    Equivalent to sys.maxsize in Python or math.MaxInt in Go.
+//
+// 3. The `else if` is key — you can't update min and compute profit on the same
+//    price, so the two cases are mutually exclusive.
+//
+// 4. Initialize maximumProfit to 0 so unprofitable cases naturally return 0
+//    without extra checks.
+//
+// Complexity: Time O(n), Space O(1)
+
 // Tests: Arrays, single pass, tracking minimum
 //
 // Best Time to Buy and Sell Stock (LeetCode 121)
@@ -12,7 +27,18 @@ using namespace std;
 int maxProfit(vector<int>& prices) {
     // TODO: Implement solution
     // Hint: Track minimum price seen so far and maximum profit
-    return 0;
+    int minimumPrice = INT_MAX;
+    int maximumProfit = 0;
+
+    for (int price : prices) {
+        if (price < minimumPrice) {
+            minimumPrice = price;
+        }
+        else if (price - minimumPrice > maximumProfit) {
+            maximumProfit = price - minimumPrice;
+        }
+    }
+    return maximumProfit;
 }
 
 int main() {
