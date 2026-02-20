@@ -68,7 +68,7 @@ def reverse_recursive(head: Optional[ListNode]) -> Optional[ListNode]:
     Recursive approach.
 
     Time: O(n)
-    Space: O(n) - consider call stac. 
+    Space: O(n) - consider call stack
 
     Your implementation:
     """
