@@ -26,19 +26,23 @@ import (
 
 // === WRITE YOUR CODE BELOW ===
 type UpperReader struct {
+	// TODO: add fields
 }
 
 type FilterReader struct {
+	// TODO: add fields
 }
 
 type LimitReader struct {
+	// TODO: add fields
 }
 
 type ChainReader struct {
+	// TODO: add fields
 }
 
 func (ur UpperReader) Read(b []byte) (int, error) {
-
+	// TODO(human): implement — call inner reader, uppercase each byte
 	return 0, fmt.Errorf("err")
 }
 
