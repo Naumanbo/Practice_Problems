@@ -1,3 +1,18 @@
+// Key Takeaways:
+// 1. Go has no while loop — use `for condition {}` instead. It's the same construct.
+//
+// 2. Declare pointer variables with `var p *ListNode = nil` or use nil directly.
+//    In Go, pointer fields use `.` not `->` (e.g. head.Next, not head->next).
+//
+// 3. Recursive template: base case first, recurse on smaller input, then combine.
+//    Always check `head == nil || head.Next == nil` before any dereference —
+//    order matters since Go short-circuits left to right.
+//
+// 4. Iterative is O(1) space. Recursive is O(n) space due to call stack.
+//    Prefer iterative in production for large lists.
+//
+// Complexity: Time O(n), Space O(1) iterative / O(n) recursive
+
 package main
 
 /*
@@ -25,7 +40,17 @@ type ListNode struct {
 // Space: O(?)
 func ReverseIterative(head *ListNode) *ListNode {
 	// Your implementation
-	return nil
+	var prev *ListNode = nil
+	var curr *ListNode = head
+	var next *ListNode = nil
+
+	for curr != nil { // No while loops in go, use "for" syntax for while loop
+		next = curr.Next
+		curr.Next = prev
+		prev = curr
+		curr = next
+	}
+	return prev
 }
 
 // ReverseRecursive reverses using recursive approach
@@ -33,7 +58,15 @@ func ReverseIterative(head *ListNode) *ListNode {
 // Space: O(?) - consider call stack
 func ReverseRecursive(head *ListNode) *ListNode {
 	// Your implementation
-	return nil
+
+	if head == nil || head.Next == nil {
+		return head
+	}
+
+	new_head := ReverseRecursive(head.Next)
+	head.Next.Next = head
+	head.Next = nil
+	return new_head
 }
 
 // =============================================================================

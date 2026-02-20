@@ -1,3 +1,20 @@
+// Key Takeaways:
+// 1. In C++, always check `head == nullptr` before `head->next == nullptr`.
+//    The || operator short-circuits left to right — dereferencing a null pointer
+//    before checking for null causes a segfault.
+//
+// 2. Iterative reversal uses three pointers (prev, curr, next), all declared as
+//    ListNode*. C++ is case-sensitive — ListNode* != listNode* != lidtNode*.
+//
+// 3. Recursive template: base case first, recurse on smaller input, then combine.
+//    For reversal: head->next->next = head flips the back-pointer,
+//    head->next = nullptr cuts the forward link to prevent cycles.
+//
+// 4. Iterative is O(1) space. Recursive is O(n) space due to call stack.
+//    Prefer iterative in production for large lists.
+//
+// Complexity: Time O(n), Space O(1) iterative / O(n) recursive
+
 /*
 DSA Problem 3: Reverse Linked List
 
@@ -30,7 +47,18 @@ struct ListNode {
 // Space: O(?)
 ListNode* reverseIterative(ListNode* head) {
     // Your implementation
-    return nullptr;
+    ListNode* prev = nullptr;
+    ListNode* curr = head;
+    ListNode* next = nullptr;
+
+    while (curr != nullptr) {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+
+    return prev;
 }
 
 // Recursive approach
@@ -38,7 +66,14 @@ ListNode* reverseIterative(ListNode* head) {
 // Space: O(?) - consider call stack
 ListNode* reverseRecursive(ListNode* head) {
     // Your implementation
-    return nullptr;
+    if (head == nullptr || head->next == nullptr) {
+        return head;
+    }
+
+    ListNode* new_head = reverseRecursive(head->next);
+    head->next->next = head;
+    head->next = nullptr;
+    return new_head;
 }
 
 // =============================================================================
