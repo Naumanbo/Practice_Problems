@@ -1,3 +1,20 @@
+# Key Takeaways:
+# 1. Dummy head pattern: create a fixed anchor node and a separate `tail` pointer
+#    that walks forward. At the end, return dummy.next (the head of the result),
+#    NOT tail (which is at the end of the list).
+#
+# 2. Use if/elif not two if statements — after advancing one list pointer in the
+#    first if, the second if may access a None pointer and crash.
+#
+# 3. Advance tail every iteration: after attaching a node with tail.next = node,
+#    do tail = tail.next or you'll keep overwriting the same position.
+#
+# 4. After the while loop, one list may still have nodes. Attach the remainder
+#    with `tail.next = list1 or list2` — no need for extra loops.
+#    Both lists are already sorted so the remainder is already in order.
+#
+# Complexity: Time O(n + m), Space O(1) — nodes are reused, not copied.
+
 """
 Merge Two Sorted Lists (LeetCode 21)
 
@@ -36,7 +53,27 @@ class ListNode:
 def merge_two_lists(list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
     # TODO: Implement solution
     # Hint: Use a dummy head node to simplify edge cases
-    pass
+    # use two pointers
+
+    dummy = ListNode()
+    tail = dummy
+
+    while list1 and list2:
+        if list1.val >= list2.val:
+            tail.next = list2
+            list2 = list2.next
+        elif list2.val >= list1.val:
+            tail.next = list1
+            list1 = list1.next
+        tail = tail.next
+    
+    tail.next = list1 or list2
+
+    return dummy.next
+
+
+
+
 
 
 # Helper functions for testing
