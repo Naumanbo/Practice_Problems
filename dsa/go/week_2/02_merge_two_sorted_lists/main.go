@@ -1,3 +1,26 @@
+// Key Takeaways:
+// 1. Same dummy head pattern across all three languages: fixed anchor + walking tail.
+//    Go: `dummy := &ListNode{}` gives a pointer directly — no address-of operator
+//    needed, unlike C++ where you allocate on the stack then take `&dummy_obj`.
+//    Python: `dummy = ListNode()` same as Go — pointer by default.
+//
+// 2. Equal value handling causes a segfault in Go if missed. With strict `>`,
+//    equal values skip both branches, tail.Next is never set, then tail = tail.Next
+//    sets tail to nil — next iteration panics. Use `<=` on one branch to cover equals.
+//    Python and C++ solutions used `>=` which naturally handled this.
+//
+// 3. Null checks by language:
+//    Go:     `list1 != nil`
+//    C++:    `list1 != nullptr`
+//    Python: `list1` (truthiness) or `list1 or list2` for remainder
+//
+// 4. Member access by language:
+//    Go:     list1.Val, tail.Next  (dot, even for pointers)
+//    C++:    list1->val, tail->next  (arrow for pointers)
+//    Python: list1.val, tail.next  (dot, always)
+//
+// Complexity: Time O(n + m), Space O(1) — nodes are reused, not copied.
+
 package main
 
 import "fmt"
@@ -15,7 +38,30 @@ type ListNode struct {
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	// TODO: Implement solution
 	// Hint: Use a dummy head node to simplify edge cases
-	return nil
+	dummy := &ListNode{}
+	tail := dummy
+
+	num := 0
+	for list1 != nil && list2 != nil {
+		if list1.Val >= list2.Val {
+			tail.Next = list2
+			list2 = list2.Next
+		} else if list2.Val >= list1.Val {
+			tail.Next = list1
+			list1 = list1.Next
+		}
+		// fmt.Printf("%d\n", num)
+
+		tail = tail.Next
+		num++
+	}
+
+	if list1 != nil {
+		tail.Next = list1
+	} else if list2 != nil {
+		tail.Next = list2
+	}
+	return dummy.Next
 }
 
 // Helper: convert slice to linked list
