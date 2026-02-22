@@ -1,3 +1,20 @@
+// Key Takeaways:
+// 1. Same dummy head pattern as Python: fixed anchor + walking tail pointer.
+//    Return dummy->next, not tail. The logic is identical across languages.
+//
+// 2. In C++, the dummy must be stack-allocated as an object first, then take
+//    its address: `ListNode dummy_obj(0); ListNode* dummy = &dummy_obj;`
+//    In Python, `dummy = ListNode()` gives you a pointer directly — no address needed.
+//
+// 3. C++ uses `->` for pointer member access (list1->val, tail->next).
+//    Python uses `.` for everything (list1.val, tail.next).
+//
+// 4. C++ null checks are explicit: `list1 != nullptr`. Python uses truthiness:
+//    `list1 and list2`. The remaining list is `tail.next = list1 or list2` in
+//    Python, but requires an explicit if/else if in C++.
+//
+// Complexity: Time O(n + m), Space O(1) — nodes are reused, not copied.
+
 // Tests: Linked lists, two pointers, iteration
 //
 // Merge Two Sorted Lists (LeetCode 21)
@@ -16,7 +33,36 @@ struct ListNode {
 ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
     // TODO: Implement solution
     // Hint: Use a dummy head node to simplify edge cases
-    return nullptr;
+    ListNode dummy_obj = ListNode(0);
+    ListNode* dummy = &dummy_obj;
+    ListNode* tail = dummy;
+
+    // cout << "b4 while\n";
+    while (list1 != nullptr && list2 != nullptr) {
+        if (list1->val >= list2->val){
+            tail->next = list2;
+            list2 = list2->next;
+        } else if (list2->val >= list1->val) {
+            tail->next = list1;
+            list1 = list1->next;
+        }
+        // cout << "while\n";
+
+        tail = tail->next;
+    }
+
+    // cout  << "after while\n";
+
+    if (list1 != nullptr) {
+        tail->next = list1;
+    }
+    else if (list2 != nullptr) {
+        tail->next = list2;
+    }
+
+
+
+    return dummy->next;
 }
 
 // Helper: convert vector to linked list
