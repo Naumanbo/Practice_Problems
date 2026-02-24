@@ -1,3 +1,19 @@
+# Key Takeaways:
+# 1. Two approaches: sorting (O(n log n), O(1) space) vs hashmap (O(n), O(n) space).
+#    Sorting is simpler to write — sort both strings and compare directly.
+#    Hashmap is faster but requires counting characters in both strings.
+#
+# 2. Early exit: if len(s) != len(t), return False immediately — anagrams must
+#    have the same length. Avoids unnecessary work.
+#
+# 3. Comparing two dicts with == in Python works — it checks all keys and values.
+#    No need to manually iterate to verify counts match.
+#
+# 4. Idiomatic Python shortcut for the sort approach: `return sorted(s) == sorted(t)`
+#    And for hashmap: use `collections.Counter(s) == collections.Counter(t)`.
+#
+# Complexity: Sort — Time O(n log n), Space O(n). Hashmap — Time O(n), Space O(n).
+
 """
 DSA Problem: Valid Anagram
 
@@ -19,24 +35,48 @@ def is_anagram_sort(s: str, t: str) -> bool:
     """
     Sorting approach.
 
-    Time: O(?)
-    Space: O(?)
+    Time: O(n log n)
+    Space: O(1)
 
     Your implementation:
     """
-    pass
+    s = sorted(s) #remember what sorted is
+    t = sorted(t)
+    if s == t:
+        return True
+    return False
 
 
 def is_anagram_hashmap(s: str, t: str) -> bool:
+
+    
     """
     Hash map counting approach.
 
-    Time: O(?)
-    Space: O(?)
+    Time: O(n)
+    Space: O(n)
 
     Your implementation:
     """
-    pass
+    
+    if len(s) != len(t):
+        return False
+    charCountS = {}
+    charCountT = {}
+
+    for chr in s:
+        if chr not in charCountS:
+            charCountS[chr] = 0
+        charCountS[chr] += 1
+
+    for chr in t:
+        if chr not in charCountT:
+            charCountT[chr] = 0
+        charCountT[chr] += 1
+
+    if charCountT == charCountS:
+        return True
+    return False
 
 
 # =============================================================================
