@@ -1,3 +1,17 @@
+// Key Takeaways:
+// 1. Kadane's algorithm is identical across languages: at each element, decide
+//    whether to extend or start fresh: `currSum = max(nums[i], currSum + nums[i])`.
+//
+// 2. Initialize to nums[0], not 0 — all-negative inputs would return 0 incorrectly.
+//
+// 3. In Go, use `len(slice)` to get the size (vs `nums.size()` in C++, `len(nums)` in Python).
+//    Go's built-in `max()` is available since Go 1.21 — no import needed, unlike
+//    C++ which requires <algorithm> for std::max.
+//
+// 4. Loop from index 1 since index 0 seeds both currSum and maxSum.
+//
+// Complexity: Time O(n), Space O(1)
+
 package main
 
 import "fmt"
@@ -10,7 +24,14 @@ import "fmt"
 func maxSubArray(nums []int) int {
 	// TODO: Implement Kadane's algorithm
 	// Hint: At each position, decide: extend current subarray or start new?
-	return 0
+	currSum := nums[0]
+	maxSum := nums[0]
+
+	for i := 1; i < len(nums); i++ {
+		currSum = max(nums[i], currSum+nums[i])
+		maxSum = max(currSum, maxSum)
+	}
+	return maxSum
 }
 
 func main() {
