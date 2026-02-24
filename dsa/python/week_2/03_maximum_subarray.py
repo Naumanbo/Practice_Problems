@@ -1,3 +1,22 @@
+# Key Takeaways:
+# 1. Kadane's invariant:
+#    `currSum` = best subarray sum that MUST end at the current index.
+#    `maxSum` = best subarray sum seen anywhere so far.
+#
+# 2. At each index, make one decision:
+#    start a new subarray at `nums[i]` OR extend the previous one (`currSum + nums[i]`).
+#    Formula: `currSum = max(nums[i], currSum + nums[i])`
+#
+# 3. Update the global answer every iteration AFTER updating `currSum`:
+#    `maxSum = max(maxSum, currSum)`
+#
+# 4. Initialize with `nums[0]` (not 0) so all-negative arrays work correctly.
+#    Example: [-3, -1, -2] should return -1, not 0.
+#
+# 5. Avoid index lookahead (`nums[i+1]`) in this problem.
+#    Kadane only needs the current value and previous running sum.
+#
+# Complexity: Time O(n), Space O(1)
 """
 Maximum Subarray (LeetCode 53)
 
@@ -32,8 +51,15 @@ from typing import List
 
 def max_subarray(nums: List[int]) -> int:
     # TODO: Implement Kadane's algorithm
-    # Hint: At each position, decide: extend current subarray or start new one?
-    pass
+    # Hint: At each position, decide: extend current subarray or start new one? greedy
+    currSum = nums[0]
+    maxSum = nums[0]
+    start_new = False
+    for i in range(1, len(nums)):
+        currSum = max(nums[i], currSum + nums[i])
+        maxSum = max(currSum, maxSum)
+        
+    return maxSum
 
 
 # Tests
