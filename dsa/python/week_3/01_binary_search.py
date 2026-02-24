@@ -1,3 +1,20 @@
+# Key Takeaways:
+# 1. Binary search template — three rules to never break:
+#    - `while left <= right` (not <) — otherwise you skip the single-element case
+#    - `mid = left + (right - left) // 2` (not `(right - left) // 2`) — the latter
+#      gives an offset, not an index. The `left +` form is also overflow-safe in C++/Go.
+#    - `left = mid + 1` / `right = mid - 1` — always skip mid after checking it,
+#      never `left = mid` or `right = mid` which causes infinite loops.
+#
+# 2. For recursive binary search with a fixed public API (nums, target), use the
+#    helper function pattern: define an inner function that carries left/right as
+#    parameters, and call it with (0, len(nums) - 1) from the outer function.
+#
+# 3. Recursive base case is `if left > right: return -1` — the inverse of the
+#    iterative while condition. Same logic, different framing.
+#
+# Complexity: Time O(log n), Space O(1) iterative / O(log n) recursive (call stack)
+
 """
 DSA Problem: Binary Search
 
@@ -21,27 +38,53 @@ from typing import List
 
 
 def binary_search_iterative(nums: List[int], target: int) -> int:
+    
     """
     Iterative binary search.
 
-    Time: O(?)
-    Space: O(?)
+    Time: O(log n)
+    Space: O(1)
 
     Your implementation:
     """
-    pass
+    left = 0
+    right = len(nums) - 1
+
+    while left <= right:
+        mid = left + (right - left) // 2
+        if target > nums[mid]: # 
+            left = mid + 1
+        elif target < nums[mid]:
+            right = mid - 1
+        else:
+            return mid
+    
+    return -1
 
 
 def binary_search_recursive(nums: List[int], target: int) -> int:
     """
     Recursive binary search.
 
-    Time: O(?)
-    Space: O(?) - consider call stack
+    Time: O(log n)
+    Space: O(log n) - consider call stack
 
     Your implementation:
     """
-    pass
+    def helper(left, right):
+        mid = left + (right - left) // 2
+        if target == nums[mid]: # base case
+            return mid
+        
+        if left <= right:
+            if target > nums[mid]: # recursive case: target resides on right of mid
+                return helper(mid+1, right)
+            elif target < nums[mid]: # recursive case 2: target resides on left of mid
+                return helper(left, mid-1)
+        return -1 # base case 2: target not found
+    
+    return helper(0, len(nums) - 1) # start recursive calls
+            
 
 
 # =============================================================================
