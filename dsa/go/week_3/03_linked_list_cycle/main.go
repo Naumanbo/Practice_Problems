@@ -1,6 +1,24 @@
+// Key Takeaways:
+// 1. Two approaches: hash set (O(n) space) stores visited node pointers,
+//    Floyd's cycle detection (O(1) space) uses fast/slow pointers.
+//    Always prefer Floyd's when space is constrained.
+//
+// 2. In Go, use map[*ListNode]bool to store visited nodes (pointer as key).
+//    Go maps support pointer keys natively — no special hashing needed.
+//
+// 3. Floyd's: slow moves 1 step, fast moves 2. If they meet, cycle exists.
+//    Check fast != nil && fast.Next != nil before each step to avoid nil dereference.
+//
+// 4. This same Floyd's algorithm works on arrays (LeetCode #287) by treating
+//    array values as next pointers — same pattern, different data structure.
+//
+// Complexity: Hash set — O(n) time, O(n) space. Floyd's — O(n) time, O(1) space.
+
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type ListNode struct {
 	Val  int
@@ -10,12 +28,40 @@ type ListNode struct {
 // HasCycleSet - hash set approach - Time: O(?) Space: O(?)
 func HasCycleSet(head *ListNode) bool {
 	// Your implementation
+	seen := make(map[*ListNode]bool)
+
+	for head != nil {
+		_, ok := seen[head]
+		if !ok {
+			seen[head] = true
+		} else {
+			return true
+		}
+		head = head.Next
+
+	}
+
 	return false
 }
 
 // HasCycleFloyd - Floyd's tortoise and hare - Time: O(?) Space: O(?)
 func HasCycleFloyd(head *ListNode) bool {
 	// Your implementation
+	if head == nil || head.Next == nil {
+		return false
+
+	}
+	slow := head
+	fast := head
+
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+		if slow == fast {
+			return true
+		}
+
+	}
 	return false
 }
 

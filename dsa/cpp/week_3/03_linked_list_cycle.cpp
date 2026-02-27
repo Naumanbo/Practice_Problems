@@ -1,7 +1,26 @@
+// Key Takeaways:
+// 1. Two approaches: hash set (O(n) space) stores visited node pointers,
+//    Floyd's cycle detection (O(1) space) uses fast/slow pointers.
+//    Always prefer Floyd's when space is constrained.
+//
+// 2. In C++, use unordered_set<ListNode*> for O(1) average lookup.
+//    unordered_set uses a hash table; set uses a red-black tree (O(log n)).
+//    For pointer storage with no ordering needed, unordered_set is correct.
+//
+// 3. Floyd's: slow moves 1 step, fast moves 2. If they meet, cycle exists.
+//    Always check fast != nullptr && fast->next != nullptr before advancing
+//    to avoid dereferencing a null pointer (segfault).
+//
+// 4. This same Floyd's algorithm works on arrays (LeetCode #287) by treating
+//    array values as next pointers — same pattern, different data structure.
+//
+// Complexity: Hash set — O(n) time, O(n) space. Floyd's — O(n) time, O(1) space.
+
 // Compile: g++ -std=c++17 -o 03_linked_list_cycle 03_linked_list_cycle.cpp
 #include <iostream>
 #include <vector>
 #include <string>
+#include <set>
 using namespace std;
 
 struct ListNode {
@@ -12,11 +31,34 @@ struct ListNode {
 
 bool hasCycleSet(ListNode* head) {
     // Your implementation
+    set<ListNode*> seen;
+    
+    for (ListNode* ptr = head; ptr != nullptr; ptr = ptr->next) {
+        if (seen.find(ptr) == seen.end()) {
+            seen.insert(ptr);
+        }
+        else {
+            return true;
+        }
+    }
+    
     return false;
 }
 
 bool hasCycleFloyd(ListNode* head) {
     // Your implementation
+    ListNode* slow = head;
+    ListNode* fast = head;
+
+    while (fast != nullptr && fast->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (slow == fast) {
+            return true;
+        }
+    }
+
     return false;
 }
 

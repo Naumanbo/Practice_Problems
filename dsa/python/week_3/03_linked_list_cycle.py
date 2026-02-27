@@ -1,3 +1,20 @@
+# Key Takeaways:
+# 1. Two approaches: hash set (O(n) space) stores visited nodes and checks membership,
+#    Floyd's cycle detection (O(1) space) uses fast/slow pointers — if they ever meet,
+#    there's a cycle. Always prefer Floyd's when space is constrained.
+#
+# 2. Floyd's invariant: slow moves 1 step, fast moves 2 steps. If a cycle exists,
+#    fast will lap slow and they will meet inside the cycle. If no cycle, fast
+#    reaches None first.
+#
+# 3. In Python, use a set() to store visited node references (object identity).
+#    `node in seen` checks if the exact object was seen before, not the value.
+#
+# 4. This same Floyd's algorithm detects cycles in arrays too (LeetCode #287
+#    Find Duplicate Number) — treating array values as "next pointers".
+#
+# Complexity: Hash set — O(n) time, O(n) space. Floyd's — O(n) time, O(1) space.
+
 """
 DSA Problem: Linked List Cycle
 
@@ -32,19 +49,43 @@ def has_cycle_set(head: Optional[ListNode]) -> bool:
 
     Your implementation:
     """
-    pass
+    visited = set()
+
+    while head != None:
+        if head not in visited:
+            visited.add(head)
+            head = head.next
+        else:
+            return True
+        
+    
+    return False
+
 
 
 def has_cycle_floyd(head: Optional[ListNode]) -> bool:
+    
     """
-    Floyd's tortoise and hare - O(1) space.
+    Floyd's tortoise and hare - O(1) space. fast and slow pointer
 
     Time: O(?)
     Space: O(?)
 
     Your implementation:
     """
-    pass
+    if not head or not head.next:
+        return False
+    slow = head
+    fast = head
+
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+        
+
+    return False
 
 
 # =============================================================================
