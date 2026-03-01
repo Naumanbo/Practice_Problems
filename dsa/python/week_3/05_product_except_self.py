@@ -1,3 +1,36 @@
+# Key Takeaways:
+# 1. Core insight: result[i] = (product of all elements LEFT of i) *
+#    (product of all elements RIGHT of i). Every "except self" problem
+#    decomposes into a left context times a right context.
+#
+# 2. Two-pass prefix/suffix pattern:
+#    Pass 1 (left → right): build prefix products into result array.
+#      res[0] = 1 (no elements to the left)
+#      res[i] = res[i-1] * nums[i-1]
+#    Pass 2 (right → left): multiply in suffix products using a running variable.
+#      suffix starts at 1, grows as you walk left.
+#      res[i] *= suffix; suffix *= nums[i]
+#    After both passes, res[i] = left_product * right_product = product except self.
+#
+# 3. The suffix running variable is the key optimization — instead of storing
+#    a full suffix array (O(n) extra space), one variable accumulates the
+#    right-side product as you scan backwards. Space drops from O(n) to O(1)
+#    extra (the result array itself doesn't count as extra space).
+#
+# 4. Zeros require no special handling — the prefix/suffix approach handles
+#    them naturally. If there's one zero, only that index gets a non-zero result.
+#    If two or more zeros exist, every index returns 0.
+#
+# 5. Identifying prefix/suffix problems: look for "result at each index depends
+#    on all OTHER elements", range queries (sum/product from i to j), or any
+#    problem where brute force is O(n²) nested loops scanning left and right.
+#    Common examples: Trapping Rain Water, Subarray Sum Equals K, this problem.
+#
+# 6. Division is the naive approach (total product / nums[i]) but fails on zeros
+#    and is explicitly banned here. Prefix/suffix avoids division entirely.
+#
+# Complexity: Time O(n) two passes, Space O(1) extra (excluding output array)
+
 """
 DSA Problem: Product of Array Except Self
 
@@ -21,6 +54,29 @@ from typing import List
 
 
 def product_except_self(nums: List[int]) -> List[int]:
+    # [1 2 3 4] = [24 12 8 6]
+    # pre: [1 1 2 6]
+    # [1] = [0]
+    # key insight: multiple everything from left of i with right of i
+    # ret[i] = left * right
+    res = [0] * len(nums)   
+    # setup prefix
+    for i in range(len(nums)):
+        if i == 0:
+            res[i] = 1
+        else:
+            res[i] = res[i-1] * nums[i-1]
+    # increment and set suffix, start from right because results is built from right, we are now multiplying everything to the right of i so need to build suffix from last elt
+    suffix = 1
+    for i in range(len(nums)-1, -1, -1):
+        res[i] *= suffix
+        suffix *= nums[i]
+        
+
+    
+
+
+    return res
     pass
 
 
