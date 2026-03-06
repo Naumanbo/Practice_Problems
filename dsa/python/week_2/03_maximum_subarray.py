@@ -16,6 +16,8 @@
 # 5. Avoid index lookahead (`nums[i+1]`) in this problem.
 #    Kadane only needs the current value and previous running sum.
 #
+# Related EECS 281 Lectures: Lec 21 (Algorithm Families — Greedy, optimal
+#   substructure), Lec 23 (Dynamic Programming — Kadane's is DP with O(1) space)
 # Complexity: Time O(n), Space O(1)
 """
 Maximum Subarray (LeetCode 53)

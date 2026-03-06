@@ -11,6 +11,8 @@
 # 4. Return 0 if no profit is possible — initialize max_profit to 0 so unprofitable
 #    cases naturally return 0 without extra checks.
 #
+# Related EECS 281 Lectures: Lec 21 (Algorithm Families — Greedy),
+#   Lec 03 (Complexity Analysis — recognizing O(n) single-pass patterns)
 # Complexity: Time O(n), Space O(1)
 
 """

@@ -29,6 +29,8 @@
 # 6. Division is the naive approach (total product / nums[i]) but fails on zeros
 #    and is explicitly banned here. Prefix/suffix avoids division entirely.
 #
+# Related EECS 281 Lectures: Lec 06 (Arrays & Containers — array traversal patterns),
+#   Lec 03 (Complexity Analysis — amortized O(n) over two passes)
 # Complexity: Time O(n) two passes, Space O(1) extra (excluding output array)
 
 """

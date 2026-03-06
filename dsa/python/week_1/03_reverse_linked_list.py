@@ -12,6 +12,8 @@
 # 4. Common recursion bugs: no base case (stack overflow), recursing on the same
 #    input (infinite loop), or ignoring the return value (result lost, returns None).
 #
+# Related EECS 281 Lectures: Lec 06 (Arrays & Containers — linked lists),
+#   Lec 05 (Recursion — base case, call stack depth, tail vs non-tail recursion)
 # Complexity: Time O(n), Space O(1) iterative / O(n) recursive
 
 """

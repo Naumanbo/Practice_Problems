@@ -35,9 +35,9 @@ func main() {
 		{10, 89,         "ten steps"},
 		{15, 987,        "fifteen steps"},
 		{20, 10946,      "twenty steps"},
-		{25, 196418,     "twenty-five steps"},
+		{25, 121393,     "twenty-five steps"},
 		{30, 1346269,    "thirty steps"},
-		{35, 9227465,    "thirty-five steps"},
+		{35, 14930352,   "thirty-five steps"},
 		{45, 1836311903, "max constraint"},
 	}
 

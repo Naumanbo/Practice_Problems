@@ -12,6 +12,8 @@
 # 4. Idiomatic Python shortcut for the sort approach: `return sorted(s) == sorted(t)`
 #    And for hashmap: use `collections.Counter(s) == collections.Counter(t)`.
 #
+# Related EECS 281 Lectures: Lec 15 (Hash Tables — frequency counting with dict),
+#   Lec 13 (Strings & Sequences — string comparison, character encoding)
 # Complexity: Sort — Time O(n log n), Space O(n). Hashmap — Time O(n), Space O(n).
 
 """

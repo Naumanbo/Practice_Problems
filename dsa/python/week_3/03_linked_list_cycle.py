@@ -13,6 +13,8 @@
 # 4. This same Floyd's algorithm detects cycles in arrays too (LeetCode #287
 #    Find Duplicate Number) — treating array values as "next pointers".
 #
+# Related EECS 281 Lectures: Lec 06 (Arrays & Containers — linked list structure),
+#   Lec 19 (Graph Introduction — cycle detection in directed graphs)
 # Complexity: Hash set — O(n) time, O(n) space. Floyd's — O(n) time, O(1) space.
 
 """

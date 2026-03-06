@@ -14,6 +14,8 @@
 # 4. Builds directly on standard binary search (week_3/01) — same skeleton,
 #    different comparison logic. Recognizing the variant pattern is the key skill.
 #
+# Related EECS 281 Lectures: Lec 09 (Ordered/Sorted/Sets — binary search variants),
+#   Lec 04 (Measuring Performance — O(log n) divide and conquer analysis)
 # Complexity: Time O(log n), Space O(1)
 
 """

@@ -9,6 +9,8 @@
 # 3. Map closers to openers (or openers to closers) to check matches in O(1).
 #    After the loop, an empty stack means all openers were matched.
 #
+# Related EECS 281 Lectures: Lec 06 (Arrays & Containers — stack ADT),
+#   Lec 02 (Containers & Permutations)
 # Complexity: Time O(n), Space O(n) worst case (all openers, e.g. "((((")
 
 """

@@ -1,3 +1,49 @@
+# Key Takeaways:
+# 1. Array-as-linked-list translation: treat index i as a node, and nums[i] as
+#    the "next pointer". You jump to index nums[i], not index i+1. This is the
+#    critical mental shift — neither slow nor fast ever increments by +1.
+#      slow = nums[slow]           # follow value once
+#      fast = nums[nums[fast]]     # follow value twice
+#
+# 2. The duplicate creates a cycle because two indices hold the same value,
+#    meaning two different nodes both point to the same next index. That shared
+#    destination is the cycle entrance — and it equals the duplicate value.
+#
+# 3. Floyd's has two phases:
+#    Phase 1 — find intersection: move slow 1 step, fast 2 steps until they meet.
+#    Phase 2 — find cycle entrance: reset slow to nums[0], move both 1 step until
+#    they meet again. Meeting point = cycle entrance = duplicate.
+#
+# 4. Use `while True` with a break for phase 1 — NOT `while slow != fast`.
+#    Both pointers start at nums[0] so they're already equal before any movement.
+#    A pre-condition check exits immediately. `while True` is Python's do-while:
+#    move first, check after.
+#
+# 5. Why phase 2 works: the distance from start to cycle entrance (F) equals
+#    the remaining distance from the intersection back to the entrance.
+#    So one pointer at nums[0] and one at the intersection both travel F steps
+#    and arrive at the entrance simultaneously.
+#
+# 6. Pigeonhole Principle: if you have n+1 values all in range [1,n], at least
+#    one value must repeat — you have more pigeons (values) than holes (slots).
+#    This is the mathematical guarantee that a duplicate always exists and the
+#    algorithm will always terminate. Without this guarantee, Floyd's could loop
+#    indefinitely or go out of bounds.
+#
+# 7. The constraint `1 <= nums[i] <= n` is not just a boundary — it's the
+#    structural requirement that makes the array representable as a linked list.
+#    Every value is a valid index. Without it, nums[slow] could go out of bounds.
+#    Always check constraints for hidden structural guarantees like this.
+#
+# 8. Same Floyd's algorithm as linked list cycle detection (week_3/03) — the only
+#    difference is how "next" is defined. Linked list: node.next. Array: nums[i].
+#    Recognizing this isomorphism (two problems with identical structure) is a
+#    core skill for reducing new problems to ones you already know.
+#
+# Related EECS 281 Lectures: Lec 19 (Graph Introduction — cycle detection, directed
+#   graphs), Lec 15 (Hash Tables — hash set as O(n) space alternative)
+# Complexity: Time O(n), Space O(1)
+
 """
 DSA Problem: Find the Duplicate Number
 
@@ -22,7 +68,23 @@ from typing import List
 
 
 def find_duplicate(nums: List[int]) -> int:
-    pass
+    slow = nums[0]
+    fast = nums[0]
+
+    while True:
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+
+        if slow == fast:
+            break
+    
+    slow = nums[0]
+    
+    while fast != slow:
+        slow = nums[slow]
+        fast = nums[fast]
+    return slow
+
 
 
 # =============================================================================

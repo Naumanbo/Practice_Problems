@@ -1,3 +1,22 @@
+# Key Takeaways:
+# 1. Brute force is O(n²) — check every pair with nested loops. The complement
+#    lookup pattern reduces this to O(n): for each num, ask "does target - num
+#    already exist in a hash map?" Store each num as you go.
+#
+# 2. Hash map trades space (O(n)) for time (O(1) lookup per element). This
+#    space-time tradeoff is fundamental — memorize it. The Dictionary ADT
+#    (EECS 281 Lec 15) is the backbone of this pattern.
+#
+# 3. Enumerate gives (index, value) pairs — use it instead of range(len(nums))
+#    when you need both. Idiomatic Python for indexed iteration.
+#
+# 4. Two-pointer approach also works but requires sorting first (O(n log n)),
+#    which destroys original indices — hash map is strictly better here.
+#
+# Related EECS 281 Lectures: Lec 15 (Dictionaries & Hash Tables),
+#   Lec 16 (Hash Collision Resolution), Lec 21 (Brute-Force vs Greedy)
+# Complexity: Brute O(n²) time O(1) space | Optimal O(n) time O(n) space
+
 """
 DSA Problem 1: Two Sum
 

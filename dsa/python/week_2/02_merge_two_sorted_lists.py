@@ -13,6 +13,8 @@
 #    with `tail.next = list1 or list2` — no need for extra loops.
 #    Both lists are already sorted so the remainder is already in order.
 #
+# Related EECS 281 Lectures: Lec 12 (Merge Sort — the merge subroutine is exactly
+#   this algorithm), Lec 06 (Arrays & Containers — linked list pointer manipulation)
 # Complexity: Time O(n + m), Space O(1) — nodes are reused, not copied.
 
 """

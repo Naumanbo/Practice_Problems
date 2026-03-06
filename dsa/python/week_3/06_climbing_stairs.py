@@ -17,6 +17,8 @@
 #    smaller sizes (overlapping subproblems), and recalculating from scratch
 #    is wasteful (optimal substructure) — it's DP. Store results, don't recompute.
 #
+# Related EECS 281 Lectures: Lec 23 (Dynamic Programming — memoization, overlapping
+#   subproblems, optimal substructure), Lec 05 (Recursion — exponential recursion trees)
 # Complexity: Time O(n), Space O(n) with memo array / O(1) with two variables
 
 """

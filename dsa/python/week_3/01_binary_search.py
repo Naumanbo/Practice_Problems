@@ -13,6 +13,8 @@
 # 3. Recursive base case is `if left > right: return -1` — the inverse of the
 #    iterative while condition. Same logic, different framing.
 #
+# Related EECS 281 Lectures: Lec 09 (Ordered/Sorted/Sets — binary search on sorted
+#   containers), Lec 04 (Measuring Performance — O(log n) analysis, divide and conquer)
 # Complexity: Time O(log n), Space O(1) iterative / O(log n) recursive (call stack)
 
 """
