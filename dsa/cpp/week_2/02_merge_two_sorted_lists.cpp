@@ -13,6 +13,8 @@
 //    `list1 and list2`. The remaining list is `tail.next = list1 or list2` in
 //    Python, but requires an explicit if/else if in C++.
 //
+// Related EECS 281 Lectures: Lec 12 (Merge Sort — the merge subroutine),
+//   Lec 06 (Arrays & Containers — linked list pointer manipulation)
 // Complexity: Time O(n + m), Space O(1) — nodes are reused, not copied.
 
 // Tests: Linked lists, two pointers, iteration

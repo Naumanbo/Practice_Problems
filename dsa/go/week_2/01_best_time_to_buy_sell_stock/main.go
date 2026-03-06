@@ -8,6 +8,8 @@
 // 3. Initialize max_profit to 0 so unprofitable cases naturally return 0
 //    without extra checks — the zero value works in your favor here.
 //
+// Related EECS 281 Lectures: Lec 21 (Algorithm Families — Greedy),
+//   Lec 03 (Complexity Analysis — O(n) single-pass patterns)
 // Complexity: Time O(n), Space O(1)
 
 package main

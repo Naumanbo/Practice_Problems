@@ -19,6 +19,8 @@
 //    C++:    list1->val, tail->next  (arrow for pointers)
 //    Python: list1.val, tail.next  (dot, always)
 //
+// Related EECS 281 Lectures: Lec 12 (Merge Sort — the merge subroutine),
+//   Lec 06 (Arrays & Containers — linked list pointer manipulation)
 // Complexity: Time O(n + m), Space O(1) — nodes are reused, not copied.
 
 package main

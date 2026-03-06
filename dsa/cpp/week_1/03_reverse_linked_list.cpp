@@ -13,6 +13,8 @@
 // 4. Iterative is O(1) space. Recursive is O(n) space due to call stack.
 //    Prefer iterative in production for large lists.
 //
+// Related EECS 281 Lectures: Lec 06 (Arrays & Containers — linked lists),
+//   Lec 05 (Recursion — base case, call stack depth)
 // Complexity: Time O(n), Space O(1) iterative / O(n) recursive
 
 /*

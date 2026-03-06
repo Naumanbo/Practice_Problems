@@ -11,6 +11,8 @@
 // 4. Initialize maximumProfit to 0 so unprofitable cases naturally return 0
 //    without extra checks.
 //
+// Related EECS 281 Lectures: Lec 21 (Algorithm Families — Greedy),
+//   Lec 03 (Complexity Analysis — O(n) single-pass patterns)
 // Complexity: Time O(n), Space O(1)
 
 // Tests: Arrays, single pass, tracking minimum

@@ -12,6 +12,8 @@
 // 4. This is O(n) time, O(1) space — a single pass with no extra storage.
 //    The naive approach (all subarrays) is O(n²) or O(n³).
 //
+// Related EECS 281 Lectures: Lec 21 (Algorithm Families — Greedy/DP),
+//   Lec 23 (Dynamic Programming — Kadane's as O(1) space DP)
 // Complexity: Time O(n), Space O(1)
 
 // Tests: Dynamic programming, Kadane's algorithm

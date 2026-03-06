@@ -12,6 +12,8 @@
 // 4. This same Floyd's algorithm works on arrays (LeetCode #287) by treating
 //    array values as next pointers — same pattern, different data structure.
 //
+// Related EECS 281 Lectures: Lec 06 (Arrays & Containers — linked list structure),
+//   Lec 19 (Graph Introduction — cycle detection in directed graphs)
 // Complexity: Hash set — O(n) time, O(n) space. Floyd's — O(n) time, O(1) space.
 
 package main

@@ -8,7 +8,9 @@
 // 3. Odd-length strings can be rejected immediately in O(1) — every valid pair
 //    contributes exactly 2 characters, so any odd-length string must be invalid.
 //
-// Complexity: Time O(n), Space O(n) worst case (all openers, e.g. "((((")
+// Related EECS 281 Lectures: Lec 06 (Arrays & Containers — stack ADT),
+//   Lec 02 (Containers & Permutations)
+// Complexity: Time O(n), Space O(n) worst case (all openers, e.g. "(((("
 
 /*
 DSA Problem 2: Valid Parentheses

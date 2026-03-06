@@ -10,6 +10,8 @@
 //
 // 4. Loop from index 1 since index 0 seeds both currSum and maxSum.
 //
+// Related EECS 281 Lectures: Lec 21 (Algorithm Families — Greedy/DP),
+//   Lec 23 (Dynamic Programming — Kadane's as O(1) space DP)
 // Complexity: Time O(n), Space O(1)
 
 package main
