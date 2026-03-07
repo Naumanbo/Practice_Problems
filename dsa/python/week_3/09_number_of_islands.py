@@ -1,3 +1,7 @@
+# Related EECS 281 Lectures: Lec 19 (Graph Introduction — BFS/DFS traversal,
+#   connected components, marking visited nodes to avoid re-processing)
+# Complexity: Time O(m*n), Space O(m*n) recursion stack / BFS queue
+
 """
 DSA Problem: Number of Islands
 
